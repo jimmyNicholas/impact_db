@@ -7,6 +7,7 @@ import ProtectedRoute from "@/components/authentication/ProtectedRoute";
 import ClassDirectory from "@/pages/ClassDirectory";
 import Class from "@/pages/Class"
 import Student from "@/pages/Student";
+import FullClass from "./pages/FullClass";
 
 function Logout() {
   localStorage.clear();
@@ -37,6 +38,7 @@ function App() {
         <Route path="/class/:className" element={<Class />} />
         <Route path="/student/:studentId" element={<Student />} />
         <Route path="*" element={<NotFound />}></Route>
+        <Route path="/FullClass" element={<FullClass />} />
       </Routes>
     </BrowserRouter>
   );
