@@ -1,3 +1,5 @@
+import { ResultType } from "./result";
+
 export interface StudentType {
   id: number;
   student_id: string;
@@ -10,6 +12,7 @@ export interface StudentType {
   teacher_comments: string;
   level_up: string;
   is_active: Boolean;
+  results: ResultType[];
 }
 
 export interface updateStudentProps {

@@ -44,36 +44,13 @@ class Result(models.Model):
         Student, on_delete=models.CASCADE, related_name="results"
     )
     week = models.CharField(max_length=2)
-    grammar = models.CharField(max_length=2, null=True, blank=True)
-    vocabulary = models.CharField(max_length=2, null=True, blank=True)
-    reading = models.CharField(max_length=2, null=True, blank=True)
-    writing = models.CharField(max_length=2, null=True, blank=True)
-    speaking = models.CharField(max_length=2, null=True, blank=True)
-    listening = models.CharField(max_length=2, null=True, blank=True)
-    pronunciation = models.CharField(max_length=2, null=True, blank=True)
+    grammar = models.CharField(max_length=3, null=True, blank=True)
+    vocabulary = models.CharField(max_length=3, null=True, blank=True)
+    reading = models.CharField(max_length=3, null=True, blank=True)
+    writing = models.CharField(max_length=3, null=True, blank=True)
+    speaking = models.CharField(max_length=3, null=True, blank=True)
+    listening = models.CharField(max_length=3, null=True, blank=True)
+    pronunciation = models.CharField(max_length=3, null=True, blank=True)
 
     def __str__(self):
         return f"Week {self.week} - {self.student.student_id}"
-
-
-# class Assessment(models.Model):
-#     skill = models.CharField(max_length=50)
-#     week = models.CharField(max_length=2)
-
-#     def __str__(self):
-#         return f"{self.skill}{self.week}"
-
-
-# class Result(models.Model):
-#     student = models.ForeignKey(
-#         Student, on_delete=models.CASCADE, related_name="results"
-#     )
-#     assessment = models.ForeignKey(
-#         Assessment, on_delete=models.CASCADE, related_name="results"
-#     )
-#     grade = models.CharField(max_length=2)
-
-#     def __str__(self):
-#         return (
-#             f"{self.assessment.skill}{self.assessment.week} - {self.student.student_id}"
-#         )

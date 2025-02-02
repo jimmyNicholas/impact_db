@@ -46,5 +46,19 @@ class ResultViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        class_name = self.kwargs["class_name"]
-        return Result.objects.filter(student__current_class__class_name=class_name)
+        if "class_name" in self.kwargs:
+            class_name = self.kwargs["class_name"]
+            return Result.objects.filter(student__current_class__class_name=class_name)
+        return Result.objects.all()
+
+    def partial_update(self, request, *args, **kwargs):
+        print("Received PATCH request with data:", request.data)
+        return super().partial_update(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)

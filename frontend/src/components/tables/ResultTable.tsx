@@ -9,16 +9,8 @@ import {
   matchers,
   type FilterDefinition,
 } from "@/components/tables/FilteredHeader";
-
-const SKILLS = {
-  G: "Grammar",
-  V: "Vocabulary",
-  R: "Reading",
-  W: "Writing",
-  S: "Speaking",
-  L: "Listening",
-  P: "Pronunciation",
-} as const;
+import useClassApi from "@/api/useClassApi";
+import { ClassType } from "@/types/class";
 
 interface Row {
   id: number;
@@ -43,39 +35,61 @@ interface ResultTableProps {
 const ResultTable: React.FC<ResultTableProps> = ({ className }) => {
   const [rows, setRows] = useState<Row[]>([]);
 
+  const { classData, getClassData } = useClassApi();
   const { results, getResults } = useResultApi();
 
   useEffect(() => {
+    getClassData(className);
     getResults(className);
+    console.log(classData);
+    //console.log(results);
   }, [className]);
 
-  const createRows = (results: ResultType[]) => {
-    const rows = [];
+  const createRows = (classData: ClassType | null, results: ResultType[]) => {
+    const allStudents = classData?.students || [];
 
-    for (let i = 0; i < results.length; i++) {
-      const {
-        id,
-        student_id,
-        first_name,
-        last_name,
-        nickname,
-        week,
-        skill,
-        grade,
-      } = results[i];
-      rows.push({
-        id,
-        studentId: student_id,
-        firstName: first_name,
-        lastName: last_name,
-        nickname,
-        week,
-        skill,
-        grade,
-      });
-    }
+    const emptyRows = allStudents.flatMap((student) =>
+      Array.from({ length: 10 }, (_, i) => ({
+        id: 0,
+        studentId: student.student_id,
+        firstName: student.first_name,
+        lastName: student.last_name,
+        nickname: student.nickname,
+        week: (i + 1).toString(),
+        G: "",
+        V: "",
+        R: "",
+        W: "",
+        S: "",
+        L: "",
+        P: "",
+      }))
+    );
 
-    return rows;
+    const groupedRows = emptyRows.reduce((acc, row) => {
+      const key = `${row.studentId}-${row.week}`;
+      acc[key] = row;
+      return acc;
+    }, {} as Record<string, Row>);
+
+    results.forEach((result) => {
+      const key = `${result.student_id}-${result.week}`;
+      if (groupedRows[key]) {
+        groupedRows[key] = {
+          ...groupedRows[key],
+          id: result.id,
+          G: result.grammar || "",
+          V: result.vocabulary || "",
+          R: result.reading || "",
+          W: result.writing || "",
+          S: result.speaking || "",
+          L: result.listening || "",
+          P: result.pronunciation || "",
+        };
+      }
+    });
+
+    return Object.values(groupedRows);
   };
 
   const columns = [
@@ -107,6 +121,7 @@ const ResultTable: React.FC<ResultTableProps> = ({ className }) => {
       key: "week",
       name: "Week",
       width: 80,
+      sortable: true,
     },
     {
       key: "G",
@@ -161,7 +176,7 @@ const ResultTable: React.FC<ResultTableProps> = ({ className }) => {
 
   useEffect(() => {
     if (!results) return;
-    const rows = createRows(results);
+    const rows = createRows(classData, results);
     setRows(rows);
   }, [results]);
 

@@ -7,7 +7,7 @@ import ProtectedRoute from "@/components/authentication/ProtectedRoute";
 import ClassDirectory from "@/pages/ClassDirectory";
 import Class from "@/pages/Class"
 import Student from "@/pages/Student";
-import FullClass from "./pages/FullClass";
+import FullClass from "./pages/FullClass/page";
 
 function Logout() {
   localStorage.clear();
