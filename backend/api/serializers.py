@@ -64,36 +64,6 @@ class ResultSerializer(serializers.ModelSerializer):
             **validated_data
         )
 
-    # def create(self, validated_data):
-    #     # Ensure we have the student_id for creation
-    #     student_id = self.context['request'].data.get('student_id')
-    #     if not student_id:
-    #         raise serializers.ValidationError({'student_id': 'This field is required.'})
-        
-    #     # Create new result with the provided student_id
-    #     validated_data['student_id'] = student_id
-    #     return Result.objects.create(**validated_data)
-
-    # student_id = serializers.IntegerField(source='student.student_id')
-    # first_name = serializers.CharField(source='student.first_name')
-    # last_name = serializers.CharField(source='student.last_name')
-    # nickname = serializers.CharField(source='student.nickname')
-    # skill = serializers.CharField(source='assessment.skill')
-    # week = serializers.CharField(source='assessment.week')
-
-    # class Meta:
-    #     model = Result
-    #     fields = [
-    #         'student_id',
-    #         'first_name',
-    #         'last_name',
-    #         'nickname',
-    #         'week',
-    #         'skill',
-    #         'grade'
-    #     ]
-
-
 class StudentSerializer(serializers.ModelSerializer):
     results = ResultSerializer(many=True, read_only=True)
 

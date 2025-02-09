@@ -1,21 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-  resultColumns,
-  ResultType,
-} from "@/pages/ResultsTable/results-columns";
-//import { DataTable } from "@/components/tables/dataTable";
 import { ClassType } from "@/types/class";
-//import { getClassData } from "@/api/classApi";
-//import { ClassDataTable } from "./ClassTable/class-data-table";
 import { getClass } from "@/api/services/class.service";
-//import StudentTable from "@/components/tables/StudentTable/page";
-//import { StudentResultsTable } from "@/components/tables/StudentResultsTable/page";
-import ResultsTable from "@/components/students/page"
+import ResultsTable from "@/components/students/page";
 
 export default function FullClass() {
   const className = "Foundation 1";
   const [classData, setClassData] = useState<ClassType | undefined>();
-  const [tableData, setTableData] = useState<ResultType[]>([]);
+  //const [tableData, setTableData] = useState<ResultType[]>([]);
 
   useEffect(() => {
     getClass(className).then((res) => {
@@ -23,16 +14,16 @@ export default function FullClass() {
     });
   }, [className]);
 
-  useEffect(() => {
-    if (classData != null) {
-      const completeData = initializeCompleteDataset(classData);
-      setTableData(completeData);
-    }
-  }, [classData]);
+  // useEffect(() => {
+  //   if (classData != null) {
+  //     const completeData = initializeCompleteDataset(classData);
+  //     setTableData(completeData);
+  //   }
+  // }, [classData]);
 
   return (
     <div className="container mx-auto py-10">
-      {/* {/* {classData ? (
+      {classData ? (
         <div className="grid grid-flow-col bg-slate-400 p-4">
           <h1>
             {"Course: "} {classData.course}
@@ -50,7 +41,7 @@ export default function FullClass() {
             {"Students:"} {classData.students.length}
           </h1>
         </div>
-      ) : null} */}
+      ) : null}
       <ResultsTable />
       {/* {tableData ? (
         <DataTable columns={resultColumns} data={tableData} />
@@ -58,7 +49,7 @@ export default function FullClass() {
     </div>
   );
 }
-
+/*
 const initializeCompleteDataset = (
   classData: ClassType,
   weekCount: number = 10
@@ -103,3 +94,4 @@ const initializeCompleteDataset = (
 
   return allResults;
 };
+*/

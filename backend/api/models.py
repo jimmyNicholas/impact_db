@@ -53,7 +53,6 @@ class Result(models.Model):
     pronunciation = models.CharField(max_length=3, null=True, blank=True)
 
     class Meta:
-        # This prevents multiple results for the same student and week
         unique_together = ['student', 'week']
 
     def __str__(self):
