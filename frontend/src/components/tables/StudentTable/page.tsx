@@ -1,8 +1,11 @@
-import useClassApi from "@/api/useClassApi";
+//import useClassApi from "@/api/useClassApi";
 import { useEffect, useState } from "react";
-import { columns, ResultType } from "./columns";
-import { DataTable } from "./data-table";
+import { ResultType } from "@/pages/ResultsTable/results-columns";
+import { DataTable } from "@/components/tables/dataTable"
 import { ClassType } from "@/types/class";
+import { getClass } from "@/api/services/class.service";
+//import allColumns from "@/components/tables/StudentTable/columns/index";
+import { basicInfoColumns, statusColumns, resultColumns } from "@/components/tables/StudentTable/columns";
 
 const initializeCompleteDataset = (
   classData: ClassType,
@@ -49,18 +52,17 @@ const initializeCompleteDataset = (
   return allResults;
 };
 
-export default function FullClass() {
+export default function StudentTable() {
   const className = "Foundation 1";
-  const { classData, getClassData } = useClassApi();
+  const [classData, setClassData] = useState<ClassType | undefined>();
   const [tableData, setTableData] = useState<ResultType[]>([]);
-  //const { results, getResults } = useResultApi();
 
   console.log(classData);
-  //console.log(results);
 
   useEffect(() => {
-    getClassData(className);
-    //getResults(className);
+    getClass(className).then((res) => {
+      setClassData(res);
+    });
   }, [className]);
 
   useEffect(() => {
@@ -69,10 +71,14 @@ export default function FullClass() {
       setTableData(completeData);
     }
   }, [classData]);
+  //console.log(allColumns);
+  
 
   return (
-    <div className="container mx-auto py-10">
-      {tableData ? <DataTable columns={columns} data={tableData} /> : null}
+    <div className="container mx-auto">
+      {tableData ? (
+        <DataTable columns={[...basicInfoColumns, ...resultColumns]} data={tableData} />
+      ) : null}
     </div>
   );
 }

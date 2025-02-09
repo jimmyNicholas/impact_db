@@ -1,20 +1,26 @@
-import { type Row } from '@tanstack/react-table';
-import { useState } from 'react';
-import { ResultType } from './columns';
+//'use client';
+
+import { useState } from "react";
+import { Row } from "@tanstack/react-table";
+import { StudentResultRow, WeeklyResult } from "@/types";
 
 interface EditableCellProps {
   initialValue: string;
-  row: Row<ResultType>;
-  column: keyof ResultType;
-  onSave: (params: { 
-    row: Row<ResultType>; 
-    column: keyof ResultType; 
+  row: Row<StudentResultRow>;
+  column: keyof WeeklyResult;
+  onSave: (params: {
+    row: Row<StudentResultRow>;
+    column: keyof WeeklyResult;
     value: string;
-    originalData: ResultType;
-  }) => void;
+  }) => Promise<boolean>;
 }
 
-const EditableCell = ({ initialValue, row, column, onSave }: EditableCellProps) => {
+const EditableCell = ({
+  initialValue,
+  row,
+  column,
+  onSave,
+}: EditableCellProps) => {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(initialValue);
 
@@ -22,23 +28,27 @@ const EditableCell = ({ initialValue, row, column, onSave }: EditableCellProps) 
     setEditing(true);
   };
 
-  const handleBlur = () => {
+  const handleBlur = async () => {
     setEditing(false);
     if (value !== initialValue) {
-      onSave?.({ 
-        row, 
-        column, 
-        value,
-        originalData: row.original
-      });
+      try {
+        await onSave({
+          row,
+          column,
+          value,
+        });
+      } catch (error) {
+        console.error("Failed to save:", error);
+        setValue(initialValue);
+      }
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleBlur();
     }
-    if (e.key === 'Escape') {
+    if (e.key === "Escape") {
       setValue(initialValue);
       setEditing(false);
     }
@@ -59,11 +69,11 @@ const EditableCell = ({ initialValue, row, column, onSave }: EditableCellProps) 
   }
 
   return (
-    <div 
+    <div
       className="h-8 max-w-10 text-left font-medium cursor-pointer flex items-center"
       onClick={handleClick}
     >
-      {value}
+      {value || "-"}
     </div>
   );
 };

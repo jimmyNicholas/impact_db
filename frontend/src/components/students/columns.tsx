@@ -1,38 +1,13 @@
-"use client";
+"use client"
 
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  DropdownFilterHeader,
-  SortHeader,
-  TextFilterHeader,
-} from "./headerFilters";
-import { skillColumns } from "./skillColumns";
+import {StudentRowType} from '@/components/students/types';
+import { skillColumns } from "@/components/students/skillColumns";
 
-export interface ResultType {
-  id: number;
-  student_id: string;
-  first_name: string;
-  last_name: string;
-  nickname: string;
-  week: string;
-  grammar: string | null;
-  vocabulary: string | null;
-  reading: string | null;
-  writing: string | null;
-  speaking: string | null;
-  listening: string | null;
-  pronunciation: string | null;
-}
-
-export const columns: ColumnDef<ResultType>[] = [
+export const columns: ColumnDef<StudentRowType, unknown>[] = [
   {
     accessorKey: "student_id",
-    header: ({ column }) => (
-      <div className="flex">
-        {SortHeader(column)}
-        {TextFilterHeader(column, "max-w-24", "Search ID...")}
-      </div>
-    ),
+    header: "ID",
   },
   {
     id: "fullName",
@@ -41,12 +16,7 @@ export const columns: ColumnDef<ResultType>[] = [
       lastName: row.last_name,
       nickname: row.nickname,
     }),
-    header: ({ column }) => (
-      <div className="flex">
-        {SortHeader(column)}
-        {TextFilterHeader(column, "max-w-64", "Search names...")}
-      </div>
-    ),
+    header: "Full Name",
     cell: ({ getValue }) => {
       const value = getValue() as {
         firstName: string;
@@ -78,11 +48,26 @@ export const columns: ColumnDef<ResultType>[] = [
     },
   },
   {
-    accessorKey: "week",
-    header: ({ column }) => (
-      <div className="flex">{DropdownFilterHeader(column, "Week")}</div>
-    ),
-    filterFn: 'equals',
+    accessorKey: "start_date",
+    header: "Start Date",
+    cell: ({ row }) =>
+      new Date(row.getValue("start_date")).toLocaleDateString(),
   },
+  {
+    accessorKey: "participation",
+    header: "Participation",
+  },
+  {
+    accessorKey: "teacher_comments",
+    header: "Comments",
+  },
+  {
+    accessorKey: "level_up",
+    header: "Level Up",
+  },
+//   {
+//     accessorKey: "grammar",
+//     header: "G!",
+//   },
   ...skillColumns,
 ];

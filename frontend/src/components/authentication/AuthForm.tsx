@@ -1,6 +1,6 @@
 import { useActionState } from "react";
 import { useFormStatus } from 'react-dom';
-import api from "@/api/api";
+import api from "@/api/config";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants";
 

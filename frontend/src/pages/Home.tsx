@@ -4,7 +4,7 @@ function Home() {
   
   return (
     <div>
-      <Link to="/class">All Classes</Link>
+      <Link to="/fullclass">Full Class</Link>
     </div>
   );
 }

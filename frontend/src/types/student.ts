@@ -22,3 +22,5 @@ export interface updateStudentProps {
   last_name: string;
   nickname: string;
 }
+
+export type StudentRowType = StudentType & ResultType;

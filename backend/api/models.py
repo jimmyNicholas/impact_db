@@ -52,5 +52,9 @@ class Result(models.Model):
     listening = models.CharField(max_length=3, null=True, blank=True)
     pronunciation = models.CharField(max_length=3, null=True, blank=True)
 
+    class Meta:
+        # This prevents multiple results for the same student and week
+        unique_together = ['student', 'week']
+
     def __str__(self):
         return f"Week {self.week} - {self.student.student_id}"

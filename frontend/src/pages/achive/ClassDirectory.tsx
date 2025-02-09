@@ -1,17 +1,21 @@
 import { useState, useEffect } from "react";
 import CreateClassForm from "@/components/forms/CreateClassForm";
 import "react-data-grid/lib/styles.css";
-import ClassApiHooks from "@/api/useClassApi";
-import ClassTable from "@/components/tables/ClassTable";
+import ClassTable from "@/components/tables/archive/ClassTable";
+import { ClassType } from "@/types/class";
+import { getClasses } from "@/api/services/class.service";
+
 
 function ClassDirectory() {
   const [showForm, setShowForm] = useState(false);
   //const [editingId, setEditingId] = useState<number | null>(null);
-
-  const { classes, getClasses } = ClassApiHooks();
+  const [classes, setClasses] = useState<ClassType[] | undefined>([]);
+  //const { classes, getClasses } = ClassApiHooks();
 
   useEffect(() => {
-    getClasses();
+    getClasses().then((res) => {
+      setClasses(res);
+    });
   }, []);
 
   // useEffect(() => {
@@ -205,7 +209,7 @@ function ClassDirectory() {
         />
       ) : null} */}
 
-      <ClassTable classes={classes} />
+      {/* <ClassTable classes={classes} /> */}
     </div>
   );
 }

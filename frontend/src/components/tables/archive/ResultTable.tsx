@@ -8,7 +8,7 @@ import {
   SelectFilter,
   matchers,
   type FilterDefinition,
-} from "@/components/tables/FilteredHeader";
+} from "@/components/tables/archive/FilteredHeader";
 import useClassApi from "@/api/useClassApi";
 import { ClassType } from "@/types/class";
 

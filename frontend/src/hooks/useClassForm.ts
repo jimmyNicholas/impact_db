@@ -1,5 +1,5 @@
 import { useActionState } from "react";
-import api from "@/api/api";
+import api from "@/api/config";
 
 interface ClassFormData {
   course: string;

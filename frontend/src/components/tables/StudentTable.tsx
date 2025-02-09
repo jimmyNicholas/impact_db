@@ -1,160 +1,168 @@
-import useStudentApi from "@/api/useStudentApi";
-import { StudentType, updateStudentProps } from "@/types/student";
-import { JSX, useEffect, useState } from "react";
-import DataGrid, { RowsChangeData, textEditor } from "react-data-grid";
-import { useNavigate } from "react-router-dom";
+// //types
+// export interface StudentRowType {
+//   id: number;
+//   student_id: string;
+//   first_name: string;
+//   last_name: string;
+//   nickname: string;
+//   current_class: number;
+//   start_date: string;
+//   participation: string;
+//   teacher_comments: string;
+//   level_up: string;
+//   is_active: boolean;
+//   week: string;
+//   grammar: string | null;
+//   vocabulary: string | null;
+//   reading: string | null;
+//   writing: string | null;
+//   speaking: string | null;
+//   listening: string | null;
+//   pronunciation: string | null;
+// }
 
-interface StudentTableProps {
-  students: StudentType[];
-}
+// // columns
+// import { ColumnDef } from "@tanstack/react-table";
 
-interface StudentRow {
-  id: number;
-  studentId: string;
-  firstName: string;
-  lastName: string;
-  nickname: string;
-  view: JSX.Element;
-  delete: JSX.Element;
-  //save?: JSX.Element;
-}
+// export const columns: ColumnDef<StudentRowType, unknown>[] = [
+//   {
+//     accessorKey: "student_id",
+//     header: "ID",
+//   },
+//   {
+//     id: "fullName",
+//     accessorFn: (row) => ({
+//       firstName: row.first_name,
+//       lastName: row.last_name,
+//       nickname: row.nickname,
+//     }),
+//     header: "Full Name",
+//     cell: ({ getValue }) => {
+//       const value = getValue() as {
+//         firstName: string;
+//         lastName: string;
+//         nickname: string;
+//       };
+//       return (
+//         <div>
+//           {value.firstName} {value.lastName}
+//           {value.nickname && (
+//             <span className="text-gray-500 ml-2">({value.nickname})</span>
+//           )}
+//         </div>
+//       );
+//     },
+//     filterFn: (row, columnId, filterValue) => {
+//       if (!filterValue) return true;
+//       const value = row.getValue(columnId) as {
+//         firstName: string;
+//         lastName: string;
+//         nickname: string;
+//       };
+//       const searchValue = String(filterValue).toLowerCase();
+//       return !!(
+//         value.firstName.toLowerCase().includes(searchValue) ||
+//         value.lastName.toLowerCase().includes(searchValue) ||
+//         (value.nickname && value.nickname.toLowerCase().includes(searchValue))
+//       );
+//     },
+//   },
+//   {
+//     accessorKey: "start_date",
+//     header: "Start Date",
+//     cell: ({ row }) =>
+//       new Date(row.getValue("start_date")).toLocaleDateString(),
+//   },
+//   {
+//     accessorKey: "participation",
+//     header: "Participation",
+//   },
+//   {
+//     accessorKey: "teacher_comments",
+//     header: "Comments",
+//   },
+//   {
+//     accessorKey: "level_up",
+//     header: "Level Up",
+//   },
+// ];
 
-const StudentTable: React.FC<StudentTableProps> = ({ students }) => {
-  const [rows, setRows] = useState<StudentRow[]>([]);
 
-  //const { getClassData, deleteClass, updateClass } = ClassApiHooks();
+// import {
+//   //ColumnDef,
+//   flexRender,
+//   getCoreRowModel,
+//   useReactTable,
+// } from "@tanstack/react-table";
 
-  const { deleteStudent, updateStudent } = useStudentApi();
+// import {
+//   Table,
+//   TableBody,
+//   TableCell,
+//   TableHead,
+//   TableHeader,
+//   TableRow,
+// } from "@/components/ui/table";
 
-  const navigate = useNavigate();
+// interface DataTableProps<TData, TValue> {
+//   columns: ColumnDef<TData, TValue>[];
+//   data: TData[];
+// }
 
-  const handleNavigation = (
-    id: string,
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    e.preventDefault();
-    navigate(`/student/${id}`);
-  };
+// export function DataTable<TData, TValue>({
+//   columns,
+//   data,
+// }: DataTableProps<TData, TValue>) {
+//   const table = useReactTable({
+//     data,
+//     columns,
+//     getCoreRowModel: getCoreRowModel(),
+//   });
 
-  const createRows = (students: StudentType[]) => {
-    const rows = [];
-
-    for (let i = 0; i < students.length; i++) {
-      const { id, student_id, first_name, last_name, nickname } = students[i];
-      rows.push({
-        id,
-        studentId: student_id,
-        firstName: first_name,
-        lastName: last_name,
-        nickname,
-
-        view: (
-          <button className='bg-green-600 p-2 m-2' onClick={(e) => handleNavigation(student_id, e)}>Go</button>
-        ),
-        //save: <SubmitButton label="Save" />,
-        delete: <button className='bg-red-600 p-2 m-2' onClick={() => deleteStudent(id)}>Delete</button>,
-      });
-    }
-
-    return rows;
-  };
-
-  const handleRowsChange = async (
-    newRows: StudentRow[],
-    data: RowsChangeData<NoInfer<StudentRow>, unknown>
-  ) => {
-    setRows(newRows);
-
-    const { indexes } = data;
-    const changedRow = newRows[indexes[0]];
-
-    const newData: updateStudentProps = {
-      id: changedRow.id,
-      student_id: changedRow.studentId,
-      first_name: changedRow.firstName,
-      last_name: changedRow.lastName,
-      nickname: changedRow.nickname,
-    };
-
-    try {
-      const res = await updateStudent(newData.id, newData);
-      if (!res) {
-        throw new Error("Failed to update class");
-      }
-      //getClasses();
-    } catch (error) {
-      console.error("Error updating class:", error);
-      if (students) setRows(createRows(students));
-    }
-  };
-
-  useEffect(() => {
-    setRows(createRows(students));
-  }, [students]);
-
-  return (
-    <>
-      {rows ? (
-        <DataGrid
-          className="fill-grid"
-          columns={columns}
-          rows={rows}
-          onRowsChange={handleRowsChange}
-          rowKeyGetter={rowKeyGetter}
-        />
-      ) : null}
-    </>
-  );
-};
-
-const columns = [
-  {
-    key: "studentId",
-    name: "ID",
-    renderEditCell: textEditor,
-    sortable: true,
-    width: 120,
-  },
-  {
-    key: "firstName",
-    name: "First Name",
-    renderEditCell: textEditor,
-    sortable: true,
-    width: 150,
-  },
-  {
-    key: "lastName",
-    name: "Last Name",
-    renderEditCell: textEditor,
-    sortable: true,
-    width: 150,
-  },
-  {
-    key: "nickname",
-    name: "Nickname",
-    renderEditCell: textEditor,
-    sortable: true,
-    width: 120,
-  },
-  {
-    key: "view",
-    name: "View",
-    width: 80,
-  },
-  //   {
-  //     key: "save",
-  //     name: "Save",
-  //     width: 80,
-  //   },
-  {
-    key: "delete",
-    name: "Delete",
-    width: 80,
-  },
-];
-
-function rowKeyGetter(row: StudentRow) {
-  return row.id;
-}
-
-export default StudentTable;
+//   return (
+//     <div className="rounded-md border">
+//       <Table>
+//         <TableHeader>
+//           {table.getHeaderGroups().map((headerGroup) => (
+//             <TableRow key={headerGroup.id}>
+//               {headerGroup.headers.map((header) => {
+//                 return (
+//                   <TableHead key={header.id}>
+//                     {header.isPlaceholder
+//                       ? null
+//                       : flexRender(
+//                           header.column.columnDef.header,
+//                           header.getContext()
+//                         )}
+//                   </TableHead>
+//                 );
+//               })}
+//             </TableRow>
+//           ))}
+//         </TableHeader>
+//         <TableBody>
+//           {table.getRowModel().rows?.length ? (
+//             table.getRowModel().rows.map((row) => (
+//               <TableRow
+//                 key={row.id}
+//                 data-state={row.getIsSelected() && "selected"}
+//               >
+//                 {row.getVisibleCells().map((cell) => (
+//                   <TableCell key={cell.id}>
+//                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
+//                   </TableCell>
+//                 ))}
+//               </TableRow>
+//             ))
+//           ) : (
+//             <TableRow>
+//               <TableCell colSpan={columns.length} className="h-24 text-center">
+//                 No results.
+//               </TableCell>
+//             </TableRow>
+//           )}
+//         </TableBody>
+//       </Table>
+//     </div>
+//   );
+// }

@@ -19,7 +19,7 @@ class ResultSerializer(serializers.ModelSerializer):
     student_id = serializers.CharField(source="student.student_id")
     first_name = serializers.CharField(source="student.first_name")
     last_name = serializers.CharField(source="student.last_name")
-    nickname = serializers.CharField(source="student.nickname")
+    nickname = serializers.CharField(source="student.nickname", required=False, allow_blank=True)
 
     class Meta:
         model = Result
@@ -40,7 +40,6 @@ class ResultSerializer(serializers.ModelSerializer):
         ]
 
     def update(self, instance, validated_data):
-        # Update only the fields that are allowed to be updated
         for field in ['week', 'grammar', 'vocabulary', 'reading', 'writing', 
                     'speaking', 'listening', 'pronunciation']:
             if field in validated_data:
@@ -49,14 +48,31 @@ class ResultSerializer(serializers.ModelSerializer):
         return instance
 
     def create(self, validated_data):
-        # Ensure we have the student_id for creation
         student_id = self.context['request'].data.get('student_id')
         if not student_id:
             raise serializers.ValidationError({'student_id': 'This field is required.'})
         
-        # Create new result with the provided student_id
-        validated_data['student_id'] = student_id
-        return Result.objects.create(**validated_data)
+        try:
+            student = Student.objects.get(student_id=student_id)
+        except Student.DoesNotExist:
+            raise serializers.ValidationError({'student_id': 'Student not found.'})
+
+        student_data = validated_data.pop('student', None)
+        
+        return Result.objects.create(
+            student=student,
+            **validated_data
+        )
+
+    # def create(self, validated_data):
+    #     # Ensure we have the student_id for creation
+    #     student_id = self.context['request'].data.get('student_id')
+    #     if not student_id:
+    #         raise serializers.ValidationError({'student_id': 'This field is required.'})
+        
+    #     # Create new result with the provided student_id
+    #     validated_data['student_id'] = student_id
+    #     return Result.objects.create(**validated_data)
 
     # student_id = serializers.IntegerField(source='student.student_id')
     # first_name = serializers.CharField(source='student.first_name')

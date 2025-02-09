@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ResultType } from "./columns";
-import EditableCell from "./EditableCell";
-import { createResult, updateResult } from "@/api/resultApi";
+import { ResultType } from "./results-columns";
+import EditableCell from "../../components/tables/StudentTable/components/EditableCell";
+import { createResult, updateResult } from "@/api/services/result.service";
 
 const skills = [
   "grammar",
@@ -11,18 +11,19 @@ const skills = [
   "speaking",
   "listening",
   "pronunciation",
-];
+] as const;
+
 export const skillColumns: ColumnDef<ResultType>[] = skills.map((skill) => {
   return {
     accessorKey: skill,
     header: String(skill[0]).toUpperCase() + String(skill).slice(1),
     cell: ({ row }) => {
-      const columnKey = "grammar";
+      const value = row.original[skill as keyof ResultType];
       return (
         <EditableCell
-          initialValue={row.original[columnKey]?.toString() || ""}
+          initialValue={value?.toString() || ""}
           row={row}
-          column={columnKey}
+          column={skill}
           onSave={async ({ row, column, value }) => {
             const basePayload = {
               student_id: row.original.student_id,
@@ -40,7 +41,7 @@ export const skillColumns: ColumnDef<ResultType>[] = skills.map((skill) => {
                   nickname: row.original.nickname,
                 };
                 success = await createResult(createPayload);
-              } else {
+              } else if (!row.original.id) {
                 success = await updateResult(row.original.id, basePayload);
               }
 

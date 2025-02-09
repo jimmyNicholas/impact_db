@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Column } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { ResultType } from "./columns";
+import { StudentRowType } from "@/types/student";
+
 import {
   Select,
   SelectContent,
@@ -11,23 +12,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect } from "react";
+import { ResultType } from "@/types/result";
 
-export const SortHeader = (column: Column<ResultType>, label?: string) => {
+export const SortHeader = (column: Column<StudentRowType>, label?: string) => {
   return (
     <Button
       variant="ghost"
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
     >
       {label ? label : null}
-      <ArrowUpDown className="h-4 w-4 " 
-      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      <ArrowUpDown
+        className="h-4 w-4 "
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       />
     </Button>
   );
 };
 
 export function TextFilterHeader(
-  column: Column<ResultType>,
+  column: Column<StudentRowType>,
   style?: string,
   placeHolder?: string
 ) {
@@ -42,7 +45,7 @@ export function TextFilterHeader(
 }
 
 export const DropdownFilterHeader = (
-  column: Column<ResultType>,
+  column: Column<StudentRowType> | Column<ResultType>,
   label: string
 ) => {
   useEffect(() => {
