@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table";
-import {StudentRowType} from '@/components/students/types';
+import {StudentRowType} from '@/types/studentRow';
 import { skillColumns } from "@/components/students/skillColumns";
 
 export const columns: ColumnDef<StudentRowType, unknown>[] = [
@@ -65,9 +65,5 @@ export const columns: ColumnDef<StudentRowType, unknown>[] = [
     accessorKey: "level_up",
     header: "Level Up",
   },
-//   {
-//     accessorKey: "grammar",
-//     header: "G!",
-//   },
   ...skillColumns,
 ];

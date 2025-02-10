@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { StudentRowType } from "@/components/students/types";
+import { StudentRowType } from "@/types/studentRow";
 import EditableCell from "@/components/students/components/EditableCell";
 import { createResult, updateResult } from "@/api/services/result.service";
 
@@ -31,15 +31,8 @@ export const skillColumns: ColumnDef<StudentRowType, unknown>[] = skills.map(
                 week: row.original.week,
                 [column]: value || null,
               };
-              //console.log(basePayload);
-
-              console.log("Current row data:", row.original);
-              console.log("Updating column:", column);
-              console.log("New value:", value);
 
               try {
-                //const resultId = row.original.id;
-
                 if (row.original.resultId) {
                   await updateResult(row.original.id, basePayload);
                 } else {
@@ -60,26 +53,6 @@ export const skillColumns: ColumnDef<StudentRowType, unknown>[] = skills.map(
                 console.error("Error saving result:", error);
                 throw error;
               }
-
-              //   try {
-              //     if (row.original[column] === null) {
-              //       const createPayload = {
-              //         ...basePayload,
-              //         first_name: row.original.first_name,
-              //         last_name: row.original.last_name,
-              //         nickname: row.original.nickname,
-              //       };
-              //       console.log('creating result: ' + createPayload);
-
-              //       await createResult(createPayload);
-              //     } else if (!row.original.id) {
-              //         console.log('updating result: ' + basePayload);
-              //       await updateResult(row.original.id, basePayload);
-              //     }
-              //   } catch (error) {
-              //     console.error("Error saving result:", error);
-              //     throw error;
-              //   }
             }}
           />
         );

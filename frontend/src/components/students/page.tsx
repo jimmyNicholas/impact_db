@@ -9,8 +9,8 @@ import { DataTable } from "@/components/students/data-table";
 import { useEffect, useMemo, useState } from "react";
 import { getClass } from "@/api/services/class.service";
 import { ClassType } from "@/types/class";
-import { columns } from "./columns";
-import { StudentRowType } from "./types";
+import { columns } from "@/components/students/columns";
+import { StudentRowType } from "@/types/studentRow";
 import { useQuery } from "@tanstack/react-query";
 
 const initializeCompleteDataset = (
@@ -38,10 +38,7 @@ const initializeCompleteDataset = (
 
 export default function ResultsTable() {
   const className = "Foundation 1";
-  //const [classData, setClassData] = useState<ClassType | undefined>();
-  //const [tableData, setTableData] = useState<StudentRowType[]>([]);
   const [selectedWeek, setSelectedWeek] = useState("1");
-  //const queryClient = useQueryClient();
 
   const { data: classData, status, error, isFetching, isLoading  } = useQuery({
     queryKey: ["class", className],
@@ -59,29 +56,12 @@ export default function ResultsTable() {
     });
   }, [status, error, isFetching, isLoading, classData]);
 
-  // Derive table data
   const tableData = useMemo(
     () => (classData ? initializeCompleteDataset(classData, selectedWeek) : []),
     [classData, selectedWeek]
   );
 
-  //   useEffect(() => {
-  //     getClass(className).then((res) => {
-  //       setClassData(res);
-  //     });
-  //   }, [className]);
-
-  //   useEffect(() => {
-  //     if (classData) {
-  //       const completeData = initializeCompleteDataset(classData, selectedWeek);
-  //       setTableData(completeData);
-  //     }
-  //   }, [classData, selectedWeek]);
-
   const weeks = Array.from({ length: 10 }, (_, i) => (i + 1).toString());
-
-  console.log({classData});
-  //console.log(tableData);
 
   return (
     <div className="container mx-auto py-10">

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Row } from "@tanstack/react-table";
-import { StudentRowType } from "@/components/students/types";
+import { StudentRowType } from "@/types/studentRow";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface EditableCellProps {
@@ -56,18 +56,6 @@ const EditableCell = ({
     setEditing(true);
   };
 
-  //   const handleBlur = () => {
-  //     setEditing(false)
-  //     if (value !== initialValue) {
-  //       onSave({
-  //         row,
-  //         column,
-  //         value,
-  //         originalData: row.original,
-  //       })
-  //     }
-  //   }
-
   const handleBlur = async () => {
     setEditing(false);
     if (value !== initialValue) {
@@ -79,7 +67,6 @@ const EditableCell = ({
           originalData: row.original,
         });
       } catch (error) {
-        // Revert to initial value on error
         setValue(initialValue);
         console.error("Failed to save:", error);
       }
