@@ -7,7 +7,7 @@ import ProtectedRoute from "@/components/authentication/ProtectedRoute";
 //import ClassDirectory from "@/pages/achive/ClassDirectory";
 //import Class from "@/pages/Class"
 //import Student from "@/pages/Student";
-import FullClass from "./pages/FullClass";
+import Class from "./pages/Class";
 
 function Logout() {
   localStorage.clear();
@@ -35,10 +35,10 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         {/* <Route path="/register" element={<RegisterAndLogout />} /> */}
         {/* <Route path="/class/" element={<ClassDirectory />} /> */}
-        {/* <Route path="/class/:className" element={<Class />} /> */}
+        <Route path="/class/:className" element={<Class />} />
         {/* <Route path="/student/:studentId" element={<Student />} /> */}
         <Route path="*" element={<NotFound />}></Route>
-        <Route path="/FullClass" element={<FullClass />} />
+        {/* <Route path="/FullClass/:className" element={<FullClass />} /> */}
       </Routes>
     </BrowserRouter>
   );

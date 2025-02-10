@@ -3,8 +3,33 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {StudentRowType} from '@/types/studentRow';
 import { skillColumns } from "@/components/students/skillColumns";
+import { Checkbox } from "../ui/checkbox";
 
 export const columns: ColumnDef<StudentRowType, unknown>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+        className="flex items-center"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="flex items-center"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "student_id",
     header: "ID",

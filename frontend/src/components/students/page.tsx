@@ -6,12 +6,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DataTable } from "@/components/students/data-table";
-import { useEffect, useMemo, useState } from "react";
-import { getClass } from "@/api/services/class.service";
+import { useMemo, useState } from "react";
 import { ClassType } from "@/types/class";
 import { columns } from "@/components/students/columns";
 import { StudentRowType } from "@/types/studentRow";
-import { useQuery } from "@tanstack/react-query";
 
 const initializeCompleteDataset = (
   classData: ClassType,
@@ -36,25 +34,12 @@ const initializeCompleteDataset = (
   });
 };
 
-export default function ResultsTable() {
-  const className = "Foundation 1";
+interface ClassTableProps {
+  classData: ClassType,
+}
+
+export default function ClassTable({classData}: ClassTableProps) {
   const [selectedWeek, setSelectedWeek] = useState("1");
-
-  const { data: classData, status, error, isFetching, isLoading  } = useQuery({
-    queryKey: ["class", className],
-    queryFn: () => getClass(className),
-  });
-
-
-  useEffect(() => {
-    console.log('Query State:', {
-      status,
-      error,
-      isFetching,
-      isLoading,
-      classData,
-    });
-  }, [status, error, isFetching, isLoading, classData]);
 
   const tableData = useMemo(
     () => (classData ? initializeCompleteDataset(classData, selectedWeek) : []),

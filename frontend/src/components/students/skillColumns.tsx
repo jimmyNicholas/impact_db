@@ -17,7 +17,7 @@ export const skillColumns: ColumnDef<StudentRowType, unknown>[] = skills.map(
   (skill) => {
     return {
       accessorKey: skill,
-      header: String(skill[0]).toUpperCase() + String(skill).slice(1),
+      header: String(skill[0]).toUpperCase(),// + String(skill).slice(1),
       cell: ({ row }) => {
         const value = row.original[skill as keyof StudentRowType];
         return (
