@@ -35,6 +35,7 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         {/* <Route path="/register" element={<RegisterAndLogout />} /> */}
         {/* <Route path="/class/" element={<ClassDirectory />} /> */}
+        <Route path="/class/" element={<Class />} />
         <Route path="/class/:className" element={<Class />} />
         {/* <Route path="/student/:studentId" element={<Student />} /> */}
         <Route path="*" element={<NotFound />}></Route>

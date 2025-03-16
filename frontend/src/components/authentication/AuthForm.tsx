@@ -12,7 +12,7 @@ interface FormProps {
 function SubmitButton({ name }: { name: string }) {
   const { pending } = useFormStatus();
   return (
-    <button className="form-button" type="submit" disabled={pending}>
+    <button className="bg-green-200 p-2 rounded-lg" type="submit" disabled={pending}>
       {name}
     </button>
   );
@@ -46,8 +46,7 @@ const Form: React.FC<FormProps> = ({ route, method }: FormProps) => {
   );
 
   return (
-    <form action={submitAction}>
-      <h1>{name}</h1>
+    <form action={submitAction} className="grid grid-flow-col gap-2">
       {error && <p className="error">{error}</p>}
       <input
         type="text"

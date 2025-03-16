@@ -1,55 +1,130 @@
 import { getClass } from "@/api/services/class.service";
 import { useParams } from "react-router-dom";
-import ClassTable from "@/components/students/page";
-import { useQuery } from "@tanstack/react-query";
-import ClassSearch, { transformFromSlugToApi } from "@/components/navigation/classSearch";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import CreateStudentForm from "@/components/forms/CreateStudentForm";
+import { useCallback, useEffect, useState } from "react";
+import ClassList from "./ClassList";
+import StudentTable from "@/components/tables/student/StudentTable";
+import ResultsTable from "@/components/tables/ResultsTable";
+import InfoPanel from "@/components/class/InfoPanel";
+import { getClassResults } from "@/api/services/class.service";
+import ActionPanel from "@/components/class/ActionPanel";
+import NavTop from "@/components/navigation/nav-top";
 
 export default function Class() {
-  
+  const queryClient = useQueryClient();
   const { className: slugParam } = useParams();
-  if (!slugParam) return <div>Class name is required</div>;
-  const apiClassName = transformFromSlugToApi(slugParam);
+  const [studentFormShown, setStudentFormShown] = useState(false);
+  const [refreshPage, setRefreshPage] = useState(0);
+  const [selectedCells, setSelectedCells] = useState<
+    Array<{ skill: string; week: number }>
+  >([]);
+
+  const showAddStudentForm = (): void => setStudentFormShown(!studentFormShown);
+
+  const showResultCols = useCallback(
+    (skill: string, week: number) => {
+      if (
+        selectedCells.some((item) => item.skill === skill && item.week === week)
+      ) {
+        setSelectedCells(
+          selectedCells.filter(
+            (item) => !(item.skill === skill && item.week === week)
+          )
+        );
+      } else {
+        setSelectedCells([...selectedCells, { skill, week }]);
+      }
+      console.log(selectedCells);
+    },
+    [selectedCells]
+  );
+
+  const refreshClass = () => {
+    queryClient.invalidateQueries({ queryKey: ["class", slugParam!] });
+    setRefreshPage(refreshPage + 1);
+  };
 
   const {
     data: classData,
-    status,
+    //status,
     error,
-    isFetching,
+    //isFetching,
     isLoading,
   } = useQuery({
-    queryKey: ["class", apiClassName!],
-    queryFn: () => getClass(apiClassName!),
-    enabled: !!apiClassName,
+    queryKey: ["class", slugParam!],
+    queryFn: async () => {
+      const result = await getClass(slugParam!);
+      if (!result) {
+        throw new Error("Class not found");
+      }
+      return result;
+    },
+    enabled: !!slugParam,
   });
 
+  const {
+    data: classResults,
+    //status,
+    //error,
+    //isFetching,
+    //isLoading,
+  } = useQuery({
+    queryKey: ["classResults", slugParam!],
+    queryFn: async () => {
+      const result = await getClassResults(slugParam!);
+      if (!result) {
+        throw new Error("Class not found");
+      }
+      return result;
+    },
+    enabled: !!slugParam,
+  });
 
+  useEffect(() => {}, [refreshPage]);
+
+  if (!slugParam) return <ClassList />;
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {(error as Error).message}</div>;
 
+  if (!classData) return <div>Loading...</div>;
+  const infoPanelProps = {
+    course: classData.course,
+    className: classData.class_name,
+    teacherOne: classData.teacher_one,
+    teacherTwo: classData.teacher_two,
+    studentNumber: classData.students.length,
+  };
+
   return (
-    <div className="container mx-auto py-10">
-      <ClassSearch/>
-      {classData ? (
-        <div className="grid grid-flow-col bg-slate-400 p-4">
-          <h1>
-            {"Course: "} {classData.course}
-          </h1>
+    <div className="">
+      <NavTop />
+      <div className="grid grid-flow-col gap-2 mx-4">
+        {classData && <InfoPanel {...infoPanelProps} />}
+        <ActionPanel
+          studentFormShown={studentFormShown}
+          showAddStudentForm={showAddStudentForm}
+        />
+      </div>
+      {studentFormShown && (
+        <CreateStudentForm classId={classData.id} onSuccess={refreshClass} />
+      )}
 
-          <h1>
-            {"Class: "} {classData.class_name}
-          </h1>
-          <h1>
-            {"Teachers: "}{" "}
-            {classData.teacher_one + " and " + classData.teacher_two}
-          </h1>
-
-          <h1>
-            {"Students:"} {classData.students.length}
-          </h1>
-        </div>
-      ) : null}
-
-      {classData ? <ClassTable classData={classData} /> : null}
+      <div className="grid grid-flow-col grid-cols-[40%_60%] gap-2 m-4">
+        {classData && (
+          <StudentTable
+            students={classData.students}
+            selectedCells={selectedCells}
+          />
+        )}
+        {classResults && (
+          <ResultsTable
+            results={classResults}
+            showResultCols={showResultCols}
+            selectedCells={selectedCells}
+          />
+        )}
+      </div>
     </div>
   );
 }

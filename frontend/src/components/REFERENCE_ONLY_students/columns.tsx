@@ -2,18 +2,16 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import {StudentRowType} from '@/types/studentRow';
-import { skillColumns } from "@/components/students/skillColumns";
+import { skillColumns } from "@/components/REFERENCE_ONLY_students/skillColumns";
 import { Checkbox } from "../ui/checkbox";
 
-export const columns: ColumnDef<StudentRowType, unknown>[] = [
+const baseColumns: ColumnDef<StudentRowType, unknown>[] = [
+  // Selection column
   {
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
         className="flex items-center"
@@ -30,6 +28,7 @@ export const columns: ColumnDef<StudentRowType, unknown>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+  // ID and Full Name columns
   {
     accessorKey: "student_id",
     header: "ID",
@@ -57,26 +56,15 @@ export const columns: ColumnDef<StudentRowType, unknown>[] = [
         </div>
       );
     },
-    filterFn: (row, columnId, filterValue) => {
-      if (!filterValue) return true;
-      const value = row.getValue(columnId) as {
-        firstName: string;
-        lastName: string;
-        nickname: string;
-      };
-      const searchValue = String(filterValue).toLowerCase();
-      return !!(
-        value.firstName.toLowerCase().includes(searchValue) ||
-        value.lastName.toLowerCase().includes(searchValue) ||
-        (value.nickname && value.nickname.toLowerCase().includes(searchValue))
-      );
-    },
   },
+];
+
+// Status columns
+const statusColumns: ColumnDef<StudentRowType, unknown>[] = [
   {
     accessorKey: "start_date",
     header: "Start Date",
-    cell: ({ row }) =>
-      new Date(row.getValue("start_date")).toLocaleDateString(),
+    cell: ({ row }) => new Date(row.getValue("start_date")).toLocaleDateString(),
   },
   {
     accessorKey: "participation",
@@ -90,5 +78,13 @@ export const columns: ColumnDef<StudentRowType, unknown>[] = [
     accessorKey: "level_up",
     header: "Level Up",
   },
-  ...skillColumns,
 ];
+
+export const getVisibleColumns = (showStatus: boolean, showResults: boolean): ColumnDef<StudentRowType, unknown>[] => {
+  const columns = [...baseColumns];
+  if (showStatus) columns.push(...statusColumns);
+  if (showResults) columns.push(...skillColumns);
+  return columns;
+};
+
+export { baseColumns, statusColumns, skillColumns };

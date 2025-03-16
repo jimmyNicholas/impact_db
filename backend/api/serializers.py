@@ -1,8 +1,6 @@
-from pyclbr import Class
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Class, Student, Result
-
+from .models import Assessment, AssessmentType, Class, CourseType, Student, SpecialValue
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,97 +12,99 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
-
-class ResultSerializer(serializers.ModelSerializer):
-    student_id = serializers.CharField(source="student.student_id")
-    first_name = serializers.CharField(source="student.first_name")
-    last_name = serializers.CharField(source="student.last_name")
-    nickname = serializers.CharField(source="student.nickname", required=False, allow_blank=True)
-
+class CourseTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Result
+        model = CourseType
+        fields = ['id', 'name', 'description']
+
+class AssessmentTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AssessmentType
+        fields = ['id', 'name', 'course_type', 'data_type', 'display_order']
+
+class SpecialValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SpecialValue
+        fields = ['id', 'code', 'description', 'include_in_average']
+
+class AssessmentSerializer(serializers.ModelSerializer):
+    assessment_type_name = serializers.CharField(source='assessment_type.name', read_only=True)
+    student_id = serializers.CharField(source='student.student_id', read_only=True)
+    first_name = serializers.CharField(source='student.first_name', read_only=True)
+    last_name = serializers.CharField(source='student.last_name', read_only=True)
+    nickname = serializers.CharField(source='student.nickname', required=False, allow_blank=True, read_only=True)
+    
+    class Meta:
+        model = Assessment
         fields = [
-            "id",
-            "student_id",
-            "first_name",
-            "last_name",
-            "nickname",
-            "week",
-            "grammar",
-            "vocabulary",
-            "reading",
-            "writing",
-            "speaking",
-            "listening",
-            "pronunciation",
+            'id', 'student', 'student_id', 'first_name', 'last_name', 'nickname',
+            'assessment_type', 'assessment_type_name', 'week', 'value', 
+            'normalized_value', 'date_assessed'
         ]
-
-    def update(self, instance, validated_data):
-        for field in ['week', 'grammar', 'vocabulary', 'reading', 'writing', 
-                    'speaking', 'listening', 'pronunciation']:
-            if field in validated_data:
-                setattr(instance, field, validated_data[field])
-        instance.save()
-        return instance
-
+        
     def create(self, validated_data):
-        student_id = self.context['request'].data.get('student_id')
-        if not student_id:
-            raise serializers.ValidationError({'student_id': 'This field is required.'})
-        
-        try:
-            student = Student.objects.get(student_id=student_id)
-        except Student.DoesNotExist:
-            raise serializers.ValidationError({'student_id': 'Student not found.'})
-
-        student_data = validated_data.pop('student', None)
-        
-        return Result.objects.create(
-            student=student,
-            **validated_data
-        )
+        # Before creating, check if value needs normalization
+        value = validated_data.get('value')
+        if value and validated_data.get('normalized_value') is None:
+            try:
+                validated_data['normalized_value'] = float(value)
+            except (ValueError, TypeError):
+                # Handle letter grades or special codes
+                pass
+                
+        return Assessment.objects.create(**validated_data)
 
 class StudentSerializer(serializers.ModelSerializer):
-    results = ResultSerializer(many=True, read_only=True)
-
+    assessments = AssessmentSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Student
         fields = [
-            "id",
-            "student_id",
-            "first_name",
-            "last_name",
-            "nickname",
-            "current_class",
-            "start_date",
-            "participation",
-            "teacher_comments",
-            "level_up",
-            "is_active",
-            "results",
+            "id", "student_id", "first_name", "last_name", "nickname",
+            "current_class", "start_date", "participation",
+            "teacher_comments", "level_up", "is_active", "assessments",
         ]
-
-    def create(self, validated_data):
-        return Student.objects.create(**validated_data)
-
-    def get_class_name(self, obj):
-        return obj.current_class.class_name if obj.current_class else None
-
 
 class ClassSerializer(serializers.ModelSerializer):
     students = StudentSerializer(many=True, read_only=True)
+    course_type_name = serializers.CharField(source='course_type.name', read_only=True)
 
     class Meta:
         model = Class
         fields = [
-            "id",
-            "course",
-            "class_name",
-            "teacher_one",
-            "teacher_two",
-            "is_active",
-            "students",
+            "id", "course", "class_name", "course_type", "course_type_name",
+            "teacher_one", "teacher_two", "is_active", "students",
         ]
 
-    def create(self, validated_data):
-        return Class.objects.create(**validated_data)
+class MatrixSerializer(serializers.Serializer):
+    """Serializes assessment data into a matrix format for UI display"""
+    skill = serializers.CharField()
+    week_1 = serializers.CharField(required=False, allow_null=True)
+    week_2 = serializers.CharField(required=False, allow_null=True)
+    week_3 = serializers.CharField(required=False, allow_null=True)
+    week_4 = serializers.CharField(required=False, allow_null=True)
+    week_5 = serializers.CharField(required=False, allow_null=True)
+    week_6 = serializers.CharField(required=False, allow_null=True)
+    week_7 = serializers.CharField(required=False, allow_null=True)
+    week_8 = serializers.CharField(required=False, allow_null=True)
+    week_9 = serializers.CharField(required=False, allow_null=True)
+    week_10 = serializers.CharField(required=False, allow_null=True)
+    
+    @classmethod
+    def create_from_assessments(cls, assessments, max_weeks=10):
+        """Transforms a queryset of assessments into matrix rows"""
+        # Group assessments by skill
+        skills = {}
+        for assessment in assessments:
+            skill = assessment.assessment_type.name
+            if skill not in skills:
+                skills[skill] = {f'week_{i}': None for i in range(1, max_weeks+1)}
+            
+            skills[skill][f'week_{assessment.week}'] = assessment.value
+            
+        # Convert to rows
+        rows = []
+        for skill, weeks in skills.items():
+            rows.append({'skill': skill, **weeks})
+            
+        return rows

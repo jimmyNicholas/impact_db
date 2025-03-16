@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { StudentRowType } from "@/types/studentRow";
-import EditableCell from "@/components/students/components/EditableCell";
+import EditableCell from "@/components/tables/components/EditableCell";
 import { createResult, updateResult } from "@/api/services/result.service";
 
 const skills = [
