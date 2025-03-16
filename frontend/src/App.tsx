@@ -4,9 +4,10 @@ import Register from "@/pages/Register";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
 import ProtectedRoute from "@/components/authentication/ProtectedRoute";
-import ClassDirectory from "@/pages/ClassDirectory";
-import Class from "@/pages/Class"
-import Student from "@/pages/Student";
+//import ClassDirectory from "@/pages/achive/ClassDirectory";
+//import Class from "@/pages/Class"
+//import Student from "@/pages/Student";
+import Class from "./pages/Class";
 
 function Logout() {
   localStorage.clear();
@@ -32,11 +33,13 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<RegisterAndLogout />} />
-        <Route path="/class/" element={<ClassDirectory />} />
+        {/* <Route path="/register" element={<RegisterAndLogout />} /> */}
+        {/* <Route path="/class/" element={<ClassDirectory />} /> */}
+        <Route path="/class/" element={<Class />} />
         <Route path="/class/:className" element={<Class />} />
-        <Route path="/student/:studentId" element={<Student />} />
+        {/* <Route path="/student/:studentId" element={<Student />} /> */}
         <Route path="*" element={<NotFound />}></Route>
+        {/* <Route path="/FullClass/:className" element={<FullClass />} /> */}
       </Routes>
     </BrowserRouter>
   );

@@ -7,7 +7,7 @@ interface SubmitButtonProps {
 const SubmitButton = ({label}: SubmitButtonProps) => {
   const { pending } = useFormStatus();
   return (
-    <button className="form-button" type="submit" disabled={pending}>
+    <button className="bg-green-300 rounded-lg" type="submit" disabled={pending}>
       {label}
     </button>
   );

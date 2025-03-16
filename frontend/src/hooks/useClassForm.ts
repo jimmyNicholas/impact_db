@@ -1,9 +1,10 @@
 import { useActionState } from "react";
-import api from "@/api/api";
+import api from "@/api/config";
 
 interface ClassFormData {
   course: string;
   class_name: string;
+  course_type: number;
   teacher_one: string;
   teacher_two: string;
 }
@@ -26,6 +27,7 @@ export const useClassForm = ({
       try {
         const course = formData.get("course") as string;
         const className = formData.get("className") as string;
+        const courseTypeId = formData.get("courseType") as string;
         const teacherOne = formData.get("teacherOne") as string;
         const teacherTwo = formData.get("teacherTwo") as string;
 
@@ -36,6 +38,7 @@ export const useClassForm = ({
         const data: ClassFormData = {
           course,
           class_name: className,
+          course_type: parseInt(courseTypeId, 10),
           teacher_one: teacherOne,
           teacher_two: teacherTwo,
         };

@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom';
+import ClassList from './ClassList';
 
 function Home() {
   
   return (
     <div>
-      <Link to="/class">All Classes</Link>
+      <ClassList/>
     </div>
   );
 }

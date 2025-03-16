@@ -1,28 +1,66 @@
 import SubmitButton from "@/components/common/buttons/Submit";
 import { useClassForm } from "@/hooks/useClassForm";
+import { useCourseTypes } from "@/hooks/useCourseTypes";
 
 interface CreateClassFormProps {
   getClasses: () => void;
 }
 
 const CreateClassForm = ({ getClasses }: CreateClassFormProps) => {
-  const courses = ["Extreme English", "General English"];
-
-  const { error, submitAction } = useClassForm({ 
-    onSuccess: getClasses, 
-    mode: 'create' 
+  const {
+    courseTypes,
+    loading: loadingCourseTypes,
+    error: courseTypesError,
+  } = useCourseTypes();
+  const { error, submitAction } = useClassForm({
+    onSuccess: getClasses,
+    mode: "create",
   });
+
+  if (loadingCourseTypes) {
+    return <div>Loading course types...</div>;
+  }
+
+  if (courseTypesError) {
+    return (
+      <div className="text-red-500">
+        Error loading course types: {courseTypesError}
+      </div>
+    );
+  }
+
+  const courseTypeItems = courseTypes || defaultCourseTypes;
 
   return (
     <>
-      <h1>Create New Class</h1>
-      <form action={submitAction} className="grid grid-cols-4">
+      <form
+        action={submitAction}
+        className="grid grid-cols-4 p-4 bg-violet-100"
+      >
         {error && <p className="error">{error}</p>}
-        <label htmlFor="course">Course:</label>
+        <label htmlFor="course" className="self-center">
+          Course:
+        </label>
         <select className="border-2" id="course" name="course" required>
-          {courses.map((course, index) => (
+          {defaultCourses.map((course, index) => (
             <option key={index} value={course}>
               {course}
+            </option>
+          ))}
+        </select>
+        <label htmlFor="courseType" className="self-center">
+          Course Type:
+        </label>
+        <select
+          className="border-2 p-2 rounded"
+          id="courseType"
+          name="courseType"
+          required
+        >
+          <option value="">Select course</option>
+          {courseTypeItems.map((course) => (
+            <option key={course.id} value={course.id}>
+              {course.name}
             </option>
           ))}
         </select>
@@ -39,3 +77,38 @@ const CreateClassForm = ({ getClasses }: CreateClassFormProps) => {
 };
 
 export default CreateClassForm;
+
+const defaultCourses = ["Extreme English", "General English"];
+
+const defaultCourseTypes = [
+  {
+    id: 1,
+    name: "GGGCambridge",
+    description: "Cambridge English exams",
+  },
+  {
+    id: 2,
+    name: "IELTS/EAP",
+    description: "IELTS preparation",
+  },
+  {
+    id: 3,
+    name: "General English",
+    description: "For GE classes",
+  },
+  {
+    id: 4,
+    name: "Business English",
+    description: "For business English classes",
+  },
+  {
+    id: 5,
+    name: "Foundation",
+    description: "For Extreme English Foundation classes",
+  },
+  {
+    id: 6,
+    name: "Excel",
+    description: "For Extreme English Excel classes",
+  },
+];
