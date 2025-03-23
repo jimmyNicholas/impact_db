@@ -1,7 +1,6 @@
 from urllib.parse import unquote
 from django.contrib.auth.models import User
 from django.db import models
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets, status
 from rest_framework.decorators import action
@@ -17,7 +16,10 @@ from .serializers import (
     UserSerializer,
 )
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.views import APIView
 from .models import Assessment, AssessmentType, Class, CourseType, SpecialValue, Student
+from .document_service import service
+from django.http import FileResponse
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -202,3 +204,16 @@ class AssessmentViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(assessments, many=True)
         return Response(serializer.data)
+    
+class exportStudentRecord(APIView):
+    serializer_class = StudentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, *args, **kwargs): 
+        
+        file_path = service.export_docx()
+        return FileResponse(
+            open(file_path, 'rb'),
+            as_attachment=True,
+            filename="generated_doc.docx"
+    )

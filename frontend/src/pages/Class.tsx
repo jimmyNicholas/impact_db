@@ -10,6 +10,7 @@ import InfoPanel from "@/components/class/InfoPanel";
 import { getClassResults } from "@/api/services/class.service";
 import ActionPanel from "@/components/class/ActionPanel";
 import NavTop from "@/components/navigation/nav-top";
+import { exportStudent } from "@/api/services/student.service";
 
 export default function Class() {
   const queryClient = useQueryClient();
@@ -96,6 +97,12 @@ export default function Class() {
     studentNumber: classData.students.length,
   };
 
+  const exportFile = () => {
+    console.log('export');
+    
+    exportStudent()
+  }
+
   return (
     <div className="">
       <NavTop />
@@ -109,21 +116,22 @@ export default function Class() {
       {studentFormShown && (
         <CreateStudentForm classId={classData.id} onSuccess={refreshClass} />
       )}
-
-      <div className="grid grid-flow-col grid-cols-[40%_60%] gap-2 m-4">
+      <button onClick={exportFile}>Export</button>
+      <div className="grid grid-flow-row  gap-2 m-4">
         {classData && (
           <StudentTable
             students={classData.students}
             selectedCells={selectedCells}
+            onSuccess={refreshClass}
           />
         )}
-        {classResults && (
+        {/* {classResults && (
           <ResultsTable
             results={classResults}
             showResultCols={showResultCols}
             selectedCells={selectedCells}
           />
-        )}
+        )} */}
       </div>
     </div>
   );

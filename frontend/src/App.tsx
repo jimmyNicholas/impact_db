@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "@/pages/Login";
-import Register from "@/pages/Register";
+//import Register from "@/pages/Register";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
 import ProtectedRoute from "@/components/authentication/ProtectedRoute";
@@ -9,15 +9,16 @@ import ProtectedRoute from "@/components/authentication/ProtectedRoute";
 //import Student from "@/pages/Student";
 import Class from "./pages/Class";
 
+
 function Logout() {
   localStorage.clear();
   return <Navigate to="/login" />;
 }
 
-function RegisterAndLogout() {
-  localStorage.clear();
-  return <Register />;
-}
+// function RegisterAndLogout() {
+//   localStorage.clear();
+//   return <Register />;
+// }
 
 function App() {
   return (
