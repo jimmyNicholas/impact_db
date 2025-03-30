@@ -2,7 +2,8 @@ export interface EditableProps {
   onSave: (value: string) => void;
   children: React.ReactNode;
   className?: string;
-  width?: string;
+  align?: "text-left" | "text-center" | "text-right";
+  noOverflow?: boolean;
 }
 
 interface DisplayProps {
@@ -13,9 +14,9 @@ interface DisplayProps {
 
 interface InputProps {
   value: string | number;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onBlur?: (newValue: string) => void;
-  type?: "text" | "number";
+  type: "text" | "date" | 'textarea';
   maxChars?: number;
 }
 
@@ -24,33 +25,47 @@ interface ActionsProps {
   onCancel: () => void;
 }
 
-export const Editable: React.FC<EditableProps> & {
+export const EditableCell: React.FC<EditableProps> & {
   Display: React.FC<DisplayProps>;
   Input: React.FC<InputProps>;
   Actions: React.FC<ActionsProps>;
-} = ({ children, className = "", width =40 }) => {
-  const containerClass = `border-2 text-center relative overflow-hidden ${className}`;
-  const style = width ? { width } : undefined;
+} = ({ children, className = "w-32", align = "text-center", noOverflow = false}) => {
+    const overflowClass = noOverflow ? "overflow-hidden" : "overflow-visible";
+    const containerClass = `border-2 relative ${align} ${overflowClass} ${className}`;
 
   return (
-    <div className={containerClass} style={style}>
+    <div className={containerClass}>
       {children}
     </div>
   );
 };
 
-Editable.Display = ({ value, formatter, onClick }: DisplayProps) => {
+EditableCell.Display = ({ value, formatter, onClick }: DisplayProps) => {
   const displayValue = formatter ? formatter(value) : value;
   return <span onClick={onClick}>{displayValue}</span>;
 };
 
-Editable.Input = ({
+EditableCell.Input = ({
   value,
   onChange,
   onBlur,
-  type = "text",
-  maxChars = 3,
+  type,
+  maxChars,
 }: InputProps) => {
+
+    if (type === 'textarea') {
+        return (
+          <textarea
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur ? (e) => onBlur(e.target.value) : () => {}}
+            maxLength={maxChars}
+            rows={4}
+            cols={18}
+            className="w-full h-full box-border px-1 py-1 text-left text-wrap"
+          />
+        );
+      }
 
   return (
     <input
@@ -64,7 +79,7 @@ Editable.Input = ({
   );
 };
 
-Editable.Actions = ({ onSave, onCancel }: ActionsProps) => {
+EditableCell.Actions = ({ onSave, onCancel }: ActionsProps) => {
   return (
     <div className="actions">
       <button onClick={onSave}>✓</button>

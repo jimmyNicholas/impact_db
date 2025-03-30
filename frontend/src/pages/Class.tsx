@@ -95,14 +95,9 @@ export default function Class() {
     teacherOne: classData.teacher_one,
     teacherTwo: classData.teacher_two,
     studentNumber: classData.students.length,
-  };
-
-  const exportFile = () => {
-    console.log('export');
-    
-    exportStudent()
-  }
-
+  };  
+  console.log(classData.students);
+  
   return (
     <div className="">
       <NavTop />
@@ -116,7 +111,6 @@ export default function Class() {
       {studentFormShown && (
         <CreateStudentForm classId={classData.id} onSuccess={refreshClass} />
       )}
-      <button onClick={exportFile}>Export</button>
       <div className="grid grid-flow-row  gap-2 m-4">
         {classData && (
           <StudentTable

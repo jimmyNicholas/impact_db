@@ -19,7 +19,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from .models import Assessment, AssessmentType, Class, CourseType, SpecialValue, Student
 from .document_service import service
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -209,11 +209,40 @@ class exportStudentRecord(APIView):
     serializer_class = StudentSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, *args, **kwargs): 
+    def get(self, request, pk): 
+        student = get_object_or_404(Student, pk=pk)
+        class_data = Class.objects.get(class_name=student.current_class)
+        assessments = Assessment.objects.filter(student=student)
         
-        file_path = service.export_docx()
+
+        context = {
+            "course": class_data.course,
+            "class_name": class_data.class_name,
+            "course_type_name": class_data.course_type.name,
+            "teacher_one": class_data.teacher_one,
+            "teacher_two": class_data.teacher_two,
+
+            "student_id": student.student_id,
+            "student_name": student.first_name + ' ' + student.last_name,
+            "nickname": '(' + student.nickname + ')' if student.nickname != '' else '',
+            "start_date": student.start_date,
+            "participation": student.participation,
+            "teacher_comments": student.teacher_comments,
+            "level_up": student.level_up,
+            "ROA": student.overall_reading,
+            "WOA": student.overall_writing,
+            "SOA": student.overall_speaking,
+            "LOA": student.overall_listening,
+        }
+
+        for item in assessments:
+            skill_id = item.assessment_type.name[0]
+            week = str(item.week)
+            context[skill_id + week] = item.value
+
+        file_path = service.export_docx(context)
         return FileResponse(
             open(file_path, 'rb'),
             as_attachment=True,
             filename="generated_doc.docx"
-    )
+        )

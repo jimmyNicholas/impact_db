@@ -10,8 +10,8 @@ import {
   updateAssessment,
 } from "@/api/services/assessment.service";
 import { useEffect, useState } from "react";
-import { studentColumns } from "./columns/baseColumns";
-import { deleteStudent } from "@/api/services/student.service";
+import { studentBaseColumns } from "./columns/baseColumns";
+import { deleteStudent, updateStudent } from "@/api/services/student.service";
 import { Editable } from "../cell/Editable";
 
 interface AssessmentData {
@@ -294,6 +294,90 @@ const StudentTable = ({
     };
   };
 
+
+  interface createAdditionalColumnProps {
+    header: string;
+    id: string;
+  }
+
+  const createAdditionalColumn = ({
+    header,
+    id,
+  }: createAdditionalColumnProps): ColumnDef<StudentType, unknown> => {
+    return {
+      header,
+      id,
+      cell: ({ row, column }) => {
+        const student = row.original;
+        console.log(student);
+        
+        const [isEditing, setIsEditing] = useState(false);
+
+        const [value, setValue] = useState()
+        const handleEditStudent = (value: string) => {
+          updateStudent(row.original.id, {value: value},)
+
+          // updateAssessment(assessment.id, {
+          //   value: value,
+          // }).then(() => onSuccess());
+        };
+
+        return (
+          <Editable onSave={handleAssessment}>
+            {!isEditing ? (
+              <Editable.Display
+                value={value}
+                onClick={() => setIsEditing(true)}
+              />
+            ) : (
+              <>
+                <Editable.Input
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  onBlur={() => {
+                    handleAssessment(value);
+                    setIsEditing(false);
+                  }}
+                />
+              </>
+            )}
+          </Editable>
+        );
+      },
+    };
+  };
+
+  const additionalColumns: ColumnDef<StudentType, unknown>[] = [
+    {
+      id: "participation",
+      header: "Participation",
+    },
+    {
+      id: "teacher_comments",
+      header: "Comments",
+    },
+    {
+      id: "level_up",
+      header: "Level Up",
+    },
+    {
+      id: "overall_reading",
+      header: "OA R",
+    },
+    {
+      id: "overall_writing",
+      header: "OA W",
+    },
+    {
+      id: "overall_speaking",
+      header: "OA S",
+    },
+    {
+      id: "overall_listening",
+      header: "OA L",
+    }
+  ].map((item) => createEditableColumn({ ...item }));
+
   const skillColumns: ColumnDef<StudentType, unknown>[] = [
     {
       id: "Grammar",
@@ -326,7 +410,8 @@ const StudentTable = ({
   ].map((skill) => createEditableColumn({ ...skill }));
 
   const updatedColumns = [
-    ...studentColumns,
+    ...studentBaseColumns,
+    ...additionalColumns,
     //...selectedColumns,
     ...skillColumns
   ];
@@ -335,7 +420,6 @@ const StudentTable = ({
     <>
       {students && (
         <>
-        {/* <div>Week:{visableWeek}</div> */}
         <div className="w-12 flex flex-row gap-2">
           <h1>Week:</h1>
           <input className="w-8 border-2" value={visibleWeek} onChange={(e) => setVisibleWeek(e.target.value)}></input>

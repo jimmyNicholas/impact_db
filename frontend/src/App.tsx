@@ -7,7 +7,7 @@ import ProtectedRoute from "@/components/authentication/ProtectedRoute";
 //import ClassDirectory from "@/pages/achive/ClassDirectory";
 //import Class from "@/pages/Class"
 //import Student from "@/pages/Student";
-import Class from "./pages/Class";
+import { ClassPage } from "./pages/ClassPage";
 
 
 function Logout() {
@@ -36,8 +36,8 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         {/* <Route path="/register" element={<RegisterAndLogout />} /> */}
         {/* <Route path="/class/" element={<ClassDirectory />} /> */}
-        <Route path="/class/" element={<Class />} />
-        <Route path="/class/:className" element={<Class />} />
+        <Route path="/class/" element={<ClassPage />} />
+        <Route path="/class/:className" element={<ClassPage />} />
         {/* <Route path="/student/:studentId" element={<Student />} /> */}
         <Route path="*" element={<NotFound />}></Route>
         {/* <Route path="/FullClass/:className" element={<FullClass />} /> */}

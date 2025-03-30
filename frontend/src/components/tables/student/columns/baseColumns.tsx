@@ -1,11 +1,9 @@
 import { StudentType } from "@/types/student";
 import { ColumnDef } from "@tanstack/react-table";
-import { createSelectionColumn } from "../../column/columnHelpers";
+import { createSelectionColumn } from "../../column/Selection";
 
-export const studentColumns: ColumnDef<StudentType, unknown>[] = [
-  // Selection column
+export const studentBaseColumns: ColumnDef<StudentType, unknown>[] = [
   createSelectionColumn<StudentType>(),
-  // ID and Full Name columns
   {
     accessorKey: "student_id",
     header: "ID",
@@ -43,17 +41,4 @@ export const studentColumns: ColumnDef<StudentType, unknown>[] = [
     cell: ({ row }) =>
       new Date(row.getValue("start_date")).toLocaleDateString(),
   },
-  {
-    accessorKey: "participation",
-    header: "Participation",
-  },
-  {
-    accessorKey: "teacher_comments",
-    header: "Comments",
-  },
-  {
-    accessorKey: "level_up",
-    header: "Level Up",
-  },
-  
 ];

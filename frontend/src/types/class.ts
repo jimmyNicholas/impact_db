@@ -1,4 +1,5 @@
 import { StudentType } from "@/types/student";
+import { AssessmentType } from "./assessment";
 
 export interface ClassType {
   id: number;
@@ -10,6 +11,7 @@ export interface ClassType {
   teacher_two: string;
   students: StudentType[];
   is_active: Boolean;
+  assessment_types: AssessmentType[];
 }
 
 /*

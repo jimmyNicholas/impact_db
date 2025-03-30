@@ -30,6 +30,10 @@ class Class(models.Model):
 
     def __str__(self):
         return self.class_name
+    
+    @property
+    def assessment_types(self):
+        return AssessmentType.objects.filter(course_type=self.course_type)
 
 class Student(models.Model):
     student_id = models.CharField(

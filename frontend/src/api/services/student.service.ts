@@ -21,25 +21,24 @@ export const updateStudent = (id: number, studentData: Partial<StudentType>) =>
 export const deleteStudent = (id: number) =>
   api.delete<{ success: boolean }>(`${BASE_ENDPOINT}/${id}/`);
 
-export const exportStudent = () => {
+// for testing purposes only
+export const exportStudent = (id: number, fileName: string) => {
   api
-    .get("api/export/", { responseType: "blob" })
-    .then((response: any) => {
-      console.log("Response type:", typeof response.data);
-
-      const blob = new Blob([response.data], {
-        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      });
-      const url = window.URL.createObjectURL(blob);
-
+    .get(`${'api/export/' + id + '/'}`, { responseType: "blob" })
+    .then((response: any) => { 
+      const url = window.URL.createObjectURL(response);
       const a = document.createElement("a");
+      
       a.href = url;
-      a.download = `student_file.docx`;
+      a.download = fileName;
+      
       document.body.appendChild(a);
       a.click();
 
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }, 500);
     })
     .catch((error: Error) => {
       console.error("Error downloading file:", error);

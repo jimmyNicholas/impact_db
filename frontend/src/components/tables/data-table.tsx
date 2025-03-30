@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
+import { exportStudent } from "@/api/services/student.service";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -47,7 +48,28 @@ export function DataTable<TData, TValue>({
     level_up: false,
     participation: false,
     start_date: false,
+    overall_reading: false,
+    overall_writing: false,
+    overall_listening: false,
+    overall_speaking: false,
   });
+
+  const [additionalVisibilty, setAdditionalVisibility] = useState(false);
+  const [overallVisibility, setOverallVisibility] = useState(false);
+
+  useEffect(() => {
+    console.log(columnVisibility);
+    setColumnVisibility({
+      teacher_comments: additionalVisibilty,
+      level_up: additionalVisibilty,
+      participation: additionalVisibilty,
+      start_date: additionalVisibilty,
+      overall_reading: overallVisibility,
+      overall_writing: overallVisibility,
+      overall_listening: overallVisibility,
+      overall_speaking: overallVisibility,
+    });
+  }, [additionalVisibilty, overallVisibility]);
 
   const [rowSelection, setRowSelection] = useState({});
 
@@ -65,50 +87,82 @@ export function DataTable<TData, TValue>({
     debugTable: true,
   });
 
+  const exportFile = () => {
+    const rows = table.getSelectedRowModel().rows;
+
+    rows.map((row: any) => {
+      const { student_id, first_name, last_name, nickname } = row.original;
+      const fileName =
+        [student_id, first_name, last_name].join(" ") +
+        (nickname && nickname.trim() !== "" ? ` (${nickname})` : "") +
+        ".docx";
+      exportStudent(row.original.id, fileName);
+    });
+  };
+
   return (
     <div>
-      {options?.selectable && (
-        <>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">Columns</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  const columnTitle = column.columnDef.header?.toString();
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {columnTitle}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+      <div className="grid grid-flow-col gap-2">
+        {options?.selectable && (
+          <>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">Columns</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    const columnTitle = column.columnDef.header?.toString();
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {columnTitle}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <button
+              onClick={() => setOverallVisibility((prev) => !prev)}
+              className="border-2"
+            >
+              Overall Results
+            </button>
+            <button
+              onClick={() => setAdditionalVisibility((prev) => !prev)}
+              className="border-2"
+            >
+              Additional Information
+            </button>
 
-          {/* {actions?.handleRowDelete && ( */}
-          <Button
-            variant="destructive"
-            //disabled={!isStudentSelected}
-            onClick={() =>
-              actions?.handleRowDelete?.(table.getSelectedRowModel().rows || [])
-            }
-          >
-            Delete
-          </Button>
+            <button onClick={exportFile} className="border-2">
+              Export
+            </button>
+            {/* {actions?.handleRowDelete && ( */}
+            <Button
+              variant="destructive"
+              //disabled={!isStudentSelected}
+              onClick={() =>
+                actions?.handleRowDelete?.(
+                  table.getSelectedRowModel().rows || []
+                )
+              }
+            >
+              Delete
+            </Button>
 
-          {/* )} */}
-        </>
-      )}
+            {/* )} */}
+          </>
+        )}
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>

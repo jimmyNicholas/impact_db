@@ -12,5 +12,5 @@ router.register('special-value', views.SpecialValueViewSet, basename='special-va
 
 urlpatterns = [
     *router.urls,
-    path('export/', views.exportStudentRecord.get, name='export')
+    path('export/<int:pk>/', views.exportStudentRecord.as_view(), name='export-student')
 ]
