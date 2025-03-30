@@ -1,3 +1,6 @@
+import { Button } from "../button/Button";
+
+
 interface ActionPanelProps {
   studentFormShown: boolean;
   showAddStudentForm: () => void;
@@ -6,16 +9,17 @@ interface ActionPanelProps {
 const ActionPanel = ({
   studentFormShown,
   showAddStudentForm,
+
 }: ActionPanelProps) => {
   return (
     <>
       <div className="grid grid-flow-col items-center bg-slate-300 p-4 my-2 gap-4 rounded-lg">
-        <button
-          className="p-2 bg-green-400 rounded-xl min-w-40"
+        <Button
+          label={studentFormShown ? "Hide Form" : "Add New Student"}
+          variant="success"
+          size="xs"
           onClick={showAddStudentForm}
-        >
-          {studentFormShown ? "Hide Form" : "Add New Student"}
-        </button>
+        />
       </div>
     </>
   );

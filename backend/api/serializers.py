@@ -63,17 +63,19 @@ class StudentSerializer(serializers.ModelSerializer):
             "id", "student_id", "first_name", "last_name", "nickname",
             "current_class", "start_date", "participation",
             "teacher_comments", "level_up", "is_active", "assessments",
+            "overall_reading", "overall_writing", "overall_speaking", "overall_listening"
         ]
 
 class ClassSerializer(serializers.ModelSerializer):
     students = StudentSerializer(many=True, read_only=True)
     course_type_name = serializers.CharField(source='course_type.name', read_only=True)
+    assessment_types = AssessmentTypeSerializer(many=True, read_only=True)
 
     class Meta:
         model = Class
         fields = [
             "id", "course", "class_name", "course_type", "course_type_name",
-            "teacher_one", "teacher_two", "is_active", "students",
+            "teacher_one", "teacher_two", "is_active", "students", "assessment_types",
         ]
 
 class MatrixSerializer(serializers.Serializer):
@@ -106,5 +108,5 @@ class MatrixSerializer(serializers.Serializer):
         rows = []
         for skill, weeks in skills.items():
             rows.append({'skill': skill, **weeks})
-            
+
         return rows

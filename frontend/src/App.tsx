@@ -1,23 +1,24 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "@/pages/Login";
-import Register from "@/pages/Register";
+//import Register from "@/pages/Register";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
 import ProtectedRoute from "@/components/authentication/ProtectedRoute";
 //import ClassDirectory from "@/pages/achive/ClassDirectory";
 //import Class from "@/pages/Class"
 //import Student from "@/pages/Student";
-import Class from "./pages/Class";
+import { ClassPage } from "./pages/ClassPage";
+
 
 function Logout() {
   localStorage.clear();
   return <Navigate to="/login" />;
 }
 
-function RegisterAndLogout() {
-  localStorage.clear();
-  return <Register />;
-}
+// function RegisterAndLogout() {
+//   localStorage.clear();
+//   return <Register />;
+// }
 
 function App() {
   return (
@@ -35,8 +36,8 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         {/* <Route path="/register" element={<RegisterAndLogout />} /> */}
         {/* <Route path="/class/" element={<ClassDirectory />} /> */}
-        <Route path="/class/" element={<Class />} />
-        <Route path="/class/:className" element={<Class />} />
+        <Route path="/class/" element={<ClassPage />} />
+        <Route path="/class/:className" element={<ClassPage />} />
         {/* <Route path="/student/:studentId" element={<Student />} /> */}
         <Route path="*" element={<NotFound />}></Route>
         {/* <Route path="/FullClass/:className" element={<FullClass />} /> */}

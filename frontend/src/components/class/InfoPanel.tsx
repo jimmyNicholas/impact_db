@@ -1,6 +1,6 @@
 import { LabeledText } from "../text/LabeledText";
 
-interface InfoPanelProps {
+export interface InfoPanelProps {
     course: string;
     className: string;
     teacherOne?: string;
@@ -34,7 +34,7 @@ const InfoPanel = ({...infoPanelProps}: InfoPanelProps) => {
 
     return (
         <>
-          <div className="grid grid-flow-col items-center bg-slate-300 p-4 my-2 gap-4 rounded-lg">
+          <div className="grid grid-flow-col items-center bg-slate-300 p-2 my-2 gap-4 rounded-lg">
             {classMetaInfo.map((info, index) => (
               <LabeledText key={index} label={info.label} text={info.text} />
             ))}

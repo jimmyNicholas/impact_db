@@ -19,7 +19,9 @@ var/
 .installed.cfg
 *.egg
 .env
+*.sqlite3
 backend/db.sqlite3
+backend/api/document_service/generated/ROR_template.docx
 
 # React
 node_modules/

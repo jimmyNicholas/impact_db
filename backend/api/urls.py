@@ -10,4 +10,7 @@ router.register('assessment-type', views.AssessmentTypeViewSet, basename='assess
 router.register('course-type', views.CourseTypeViewSet, basename='course-type')
 router.register('special-value', views.SpecialValueViewSet, basename='special-value')
 
-urlpatterns = router.urls
+urlpatterns = [
+    *router.urls,
+    path('export/<int:pk>/', views.exportStudentRecord.as_view(), name='export-student')
+]

@@ -1,5 +1,8 @@
+import React, { Children } from "react";
+
 interface ButtonProps {
-    label: string;
+    label?: string;
+    children?: React.ReactNode;
     type?: "button" | "submit" | "reset";
     variant?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
     size?: "xs" | "sm" | "md" | "lg" | "xl";
@@ -20,6 +23,7 @@ interface ButtonProps {
   
   export const Button = ({
     label,
+    children,
     type = "button",
     variant = "primary",
     size = "md",
@@ -101,7 +105,7 @@ interface ButtonProps {
           ${!backgroundColor ? variantStyles[variant].bg : ''}
           ${!textColor ? variantStyles[variant].text : ''}
           ${!(paddingX !== undefined || paddingY !== undefined) ? sizeStyles[size].padding : ''}
-          ${!(borderRadius !== undefined) ? 'rounded-md' : ''}
+          ${!(borderRadius !== undefined) ? 'rounded-lg' : ''}
           ${fontWeightClasses[fontWeight]}
           ${widthClasses[width]}
           transition-colors duration-200
@@ -111,7 +115,7 @@ interface ButtonProps {
         onClick={onClick}
         style={customStyles}
       >
-        {isLoading ? "Loading..." : label}
+        {isLoading ? "Loading..." : label || children}
       </button>
     );
   };
