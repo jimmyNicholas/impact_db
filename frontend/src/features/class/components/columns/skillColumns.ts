@@ -83,10 +83,10 @@ export const createSkillColumns = ({
   const skillColumnDefs = [
     { id: "Grammar", header: "G" },
     { id: "Vocabulary", header: "V" },
+    { id: "Listening", header: "L" },
     { id: "Reading", header: "R" },
     { id: "Writing", header: "W" },
     { id: "Speaking", header: "S" },
-    { id: "Listening", header: "L" },
     { id: "Pronunciation", header: "P" },
   ];
 
