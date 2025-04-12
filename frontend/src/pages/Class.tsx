@@ -5,10 +5,10 @@ import CreateStudentForm from "@/components/forms/CreateStudentForm";
 import { useCallback, useEffect, useState } from "react";
 import ClassList from "./ClassList";
 import StudentTable from "@/components/tables/student/StudentTable";
-import ResultsTable from "@/components/tables/ResultsTable";
-import InfoPanel from "@/components/class/InfoPanel";
+import ResultsTable from "@/components/tables/DEL_ResultsTable";
+import InfoPanel from "@/components/z_TO_DELETE/DEL_class/InfoPanel";
 import { getClassResults } from "@/api/services/class.service";
-import ActionPanel from "@/components/class/ActionPanel";
+import ActionPanel from "@/components/z_TO_DELETE/DEL_class/ActionPanel";
 import NavTop from "@/components/navigation/nav-top";
 import { exportStudent } from "@/api/services/student.service";
 

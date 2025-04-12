@@ -41,6 +41,8 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest);
         }
       } catch (refreshError) {
+        localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem(REFRESH_TOKEN);
         window.location.href = "/login";
         return Promise.reject(refreshError);
       }
@@ -55,13 +57,19 @@ export const api = {
     axiosInstance.get<T>(endpoint, config).then((response) => response.data),
 
   post: <T>(endpoint: string, data?: unknown, config?: AxiosRequestConfig) =>
-    axiosInstance.post<T>(endpoint, data, config).then((response) => response.data),
+    axiosInstance
+      .post<T>(endpoint, data, config)
+      .then((response) => response.data),
 
   put: <T>(endpoint: string, data: unknown, config?: AxiosRequestConfig) =>
-    axiosInstance.put<T>(endpoint, data, config).then((response) => response.data),
+    axiosInstance
+      .put<T>(endpoint, data, config)
+      .then((response) => response.data),
 
   patch: <T>(endpoint: string, data: unknown, config?: AxiosRequestConfig) =>
-    axiosInstance.patch<T>(endpoint, data, config).then((response) => response.data),
+    axiosInstance
+      .patch<T>(endpoint, data, config)
+      .then((response) => response.data),
 
   delete: <T>(endpoint: string, config?: AxiosRequestConfig) =>
     axiosInstance.delete<T>(endpoint, config).then((response) => response.data),

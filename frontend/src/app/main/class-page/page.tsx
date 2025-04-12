@@ -2,15 +2,14 @@ import {
   ClassDataProvider,
   useClassDataContext,
 } from "@/features/class/context/ClassDataContext";
-import ActionPanel from "@/components/z_TO_DELETE/DEL_class/ActionPanel";
-import InfoPanel, { InfoPanelProps } from "@/components/z_TO_DELETE/DEL_class/InfoPanel";
-import CreateStudentForm from "@/components/forms/CreateStudentForm";
-import NavTop from "@/components/navigation/nav-top";
+import { ClassPageActionPanel } from "./_components/class-page-action-panel/ClassPageActionPanel";
 import { StudentDataProps, StudentType } from "@/types/student";
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { StudentTable } from "@/features/class/components/StudentTable";
 import { CreateAssessmentType } from "@/types/assessment";
+import { FocusPoint } from "@/components/focus-point/FocusPoint";
+import { ClassPageInfoPanel } from "./_components/class-page-info-panel/ClassPageInfoPanel";
+import { ClassPageInfoPanelProps } from "./_components/class-page-info-panel/class-page-info-panel-interface";
 
 export const ClassPage: React.FC = () => {
   const { className: slugParam } = useParams<string>();
@@ -23,9 +22,6 @@ export const ClassPage: React.FC = () => {
 };
 
 export const ClassPageContent = () => {
-  const [studentFormShown, setStudentFormShown] = useState<boolean>(false);
-  const showAddStudentForm = (): void => setStudentFormShown(!studentFormShown);
-
   const {
     classData,
     isLoading,
@@ -44,7 +40,7 @@ export const ClassPageContent = () => {
     return <div className="p-4 text-red-500">Error: {error.message}</div>;
   if (!classData) return <div className="p-4">Class not found</div>;
 
-  const infoPanelProps: InfoPanelProps = {
+  const infoPanelProps: ClassPageInfoPanelProps = {
     course: classData.course,
     className: classData.class_name,
     teacherOne: classData.teacher_one,
@@ -57,7 +53,6 @@ export const ClassPageContent = () => {
   ): Promise<void> => {
     await addStudent(newStudent);
     refetchClass();
-    setStudentFormShown(false);
   };
 
   const handleStudentUpdated = async (
@@ -68,11 +63,8 @@ export const ClassPageContent = () => {
     refetchClass();
   };
 
-  const handleStudentDeleted = async (
-    id: number,
-  ): Promise<void> => {
-    await deleteStudent(id),
-    refetchClass();
+  const handleStudentDeleted = async (id: number): Promise<void> => {
+    await deleteStudent(id), refetchClass();
   };
 
   const handleAssessmentAdded = async (
@@ -89,24 +81,24 @@ export const ClassPageContent = () => {
     await updateAssessment(id, assessmentData);
     refetchClass();
   };
-  
+
   return (
     <div className="grid grid-flow-row">
-      <NavTop />
-      <div className="grid grid-flow-col gap-2 mx-4">
-        {classData && <InfoPanel {...infoPanelProps} />}
-        <ActionPanel
-          studentFormShown={studentFormShown}
-          showAddStudentForm={showAddStudentForm}
-        />
-      </div>
-      {studentFormShown && (
-        <CreateStudentForm
-          classId={classData.id}
-          handleStudentAdded={handleStudentAdded}
-        />
+      {classData && (
+        <div className="grid grid-cols-[50%_auto_auto] gap-4 px-2">
+          <ClassPageInfoPanel {...infoPanelProps} />
+          <ClassPageActionPanel
+            classId={classData.id}
+            handleStudentAdded={handleStudentAdded}
+          />
+          <FocusPoint
+            assessment_types={classData.assessment_types}
+            students={classData.students}
+          />
+        </div>
       )}
-      <div className="grid grid-flow-row gap-2 mx-4">
+
+      <div className="grid grid-flow-row gap-2 px-4">
         {classData && (
           <StudentTable
             students={classData.students}

@@ -241,8 +241,16 @@ class exportStudentRecord(APIView):
             context[skill_id + week] = item.value
 
         file_path = service.export_docx(context)
-        return FileResponse(
-            open(file_path, 'rb'),
-            as_attachment=True,
-            filename="generated_doc.docx"
-        )
+
+        f = open(file_path, 'rb')
+        response = FileResponse(f)
+        response.set_headers({
+            'Content-Disposition': 'attachment; filename="test.docx"',
+        })
+        return response
+
+        # return FileResponse(
+        #     open(file_path, 'rb'),
+        #     as_attachment=True,
+        #     filename="generated_doc.docx"
+        # )

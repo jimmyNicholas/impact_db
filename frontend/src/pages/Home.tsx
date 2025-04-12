@@ -1,4 +1,4 @@
-import ClassList from './ClassList';
+import { ClassList } from "@/app/main/class-list/page";
 
 function Home() {
   

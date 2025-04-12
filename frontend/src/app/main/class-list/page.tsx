@@ -1,27 +1,20 @@
 import { deleteClass, getClasses } from "@/api/services/class.service";
-import CreateClassForm from "@/components/forms/CreateClassForm";
 import { transformToSlug } from "@/components/navigation/classSearch";
-import NavTop from "@/components/navigation/nav-top";
 import { DataTable } from "@/components/tables/data-table";
-import { StudentType } from "@/types/student";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
+import { ClassRowType } from "./interface";
+import { ClassListActionPanel } from "./_components/class-list-action-panel/ClassListActionPanel";
 
-interface ClassRowType {
-  id: number;
-  course: string;
-  class_name: string;
-  teacher_one: string;
-  teacher_two: string;
-  students: StudentType[];
-}
 
-const ClassList = () => {
-  const { data: classes = [] } = useQuery({
+export const ClassList = () => {
+
+  const { data: classes = [], refetch } = useQuery({
     queryKey: ["classes"],
     queryFn: getClasses,
   });
+  
   console.log(classes);
 
   const columns: ColumnDef<ClassRowType, unknown>[] = [
@@ -62,7 +55,9 @@ const ClassList = () => {
       cell: ({ row }) => (
         <div
           className="py-1 text-center cursor-pointer rounded-lg bg-red-300 hover:bg-red-200"
-          onClick={() => deleteClass(row.original.id)}
+          onClick={async () => {
+            await deleteClass(row.original.id).then(() => refetch())
+          }}
         >
           Del
         </div>
@@ -72,12 +67,10 @@ const ClassList = () => {
 
   return (
     <div className="w-full h-full">
-      <CreateClassForm getClasses={getClasses} />
-      <div className="grid gap-2 p-4 bg-blue-200">
+      <ClassListActionPanel refetchClasses={refetch}/>
+      <div className="grid gap-2 p-4 bg-base-300">
         <DataTable columns={columns} data={classes} />
       </div>
     </div>
   );
 };
-
-export default ClassList;

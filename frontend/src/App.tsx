@@ -7,8 +7,10 @@ import ProtectedRoute from "@/components/authentication/ProtectedRoute";
 //import ClassDirectory from "@/pages/achive/ClassDirectory";
 //import Class from "@/pages/Class"
 //import Student from "@/pages/Student";
-import { ClassPage } from "./pages/ClassPage";
-
+//import { ClassPage } from "./pages/ClassPage";
+import { PageLayout } from "./app/main/layout";
+import { ClassPage } from "./app/main/class-page/page";
+import { ClassList } from "./app/main/class-list/page";
 
 function Logout() {
   localStorage.clear();
@@ -24,20 +26,27 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
         <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
+
+        <Route element={<PageLayout />}>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/class/" element={<ClassList />} />
+          <Route path="/class/:className" element={<ClassPage />} />
+        </Route>
+
+        {/* <Route path="/login" element={<Login />} />
+        <Route path="/logout" element={<Logout />} /> */}
         {/* <Route path="/register" element={<RegisterAndLogout />} /> */}
         {/* <Route path="/class/" element={<ClassDirectory />} /> */}
-        <Route path="/class/" element={<ClassPage />} />
-        <Route path="/class/:className" element={<ClassPage />} />
+        {/* <Route path="/class/" element={<ClassPage />} />
+        <Route path="/class/:className" element={<ClassPage />} /> */}
         {/* <Route path="/student/:studentId" element={<Student />} /> */}
         <Route path="*" element={<NotFound />}></Route>
         {/* <Route path="/FullClass/:className" element={<FullClass />} /> */}

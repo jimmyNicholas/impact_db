@@ -25,6 +25,8 @@ export const exportStudent = (id: number, fileName: string) => {
   api
     .get(`${"api/export/" + id + "/"}`, { responseType: "blob" })
     .then((response: any) => {
+      console.log(response);
+      
       const url = window.URL.createObjectURL(response);
       const a = document.createElement("a");
 
@@ -42,4 +44,19 @@ export const exportStudent = (id: number, fileName: string) => {
     .catch((error: Error) => {
       console.error("Error downloading file:", error);
     });
+  // api.get<{ file_url: string }>(`api/export/${id}/`)
+  // .then((response) => {
+  //   console.log(response);
+    
+  //   const fileUrl = response.file_url;
+  //   const a = document.createElement("a");
+  //   a.href = fileUrl;
+  //   a.download = fileName;
+  //   document.body.appendChild(a);
+  //   a.click();
+  //   document.body.removeChild(a);
+  // })
+  // .catch((error: Error) => {
+  //   console.error("Error downloading file:", error);
+  // });
 };

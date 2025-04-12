@@ -16,7 +16,7 @@ export const CheckboxCell: React.FC<CheckboxProps> = ({
       checked={checked}
       onCheckedChange={(value) => onCheckedChange(!!value)}
       aria-label={ariaLabel}
-      className="flex items-center"
+      className="checkbox flex items-center" 
     />
   );
 };

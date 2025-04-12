@@ -46,8 +46,13 @@ const Form: React.FC<FormProps> = ({ route, method }: FormProps) => {
   );
 
   return (
-    <form action={submitAction} className="grid grid-flow-col gap-2">
+    <form action={submitAction} className="grid grid-flow-row justify-center items-center gap-8">
       {error && <p className="error">{error}</p>}
+      <img
+          src="/logo-impact-english-college.png"
+          alt="Impact Logo"
+          className="h-20 w-auto"
+        />
       <input
         type="text"
         name="username"

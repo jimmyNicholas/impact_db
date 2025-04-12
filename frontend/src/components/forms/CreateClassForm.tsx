@@ -1,19 +1,25 @@
-import SubmitButton from "@/components/common/buttons/Submit";
 import { useClassForm } from "@/hooks/useClassForm";
 import { useCourseTypes } from "@/hooks/useCourseTypes";
 
 interface CreateClassFormProps {
-  getClasses: () => void;
+  refetchClasses: () => void;
 }
 
-const CreateClassForm = ({ getClasses }: CreateClassFormProps) => {
+const CreateClassForm = ({ refetchClasses }: CreateClassFormProps) => {
   const {
     courseTypes,
     loading: loadingCourseTypes,
     error: courseTypesError,
   } = useCourseTypes();
-  const { error, submitAction } = useClassForm({
-    onSuccess: getClasses,
+
+  const { submitAction } = useClassForm({
+    onSuccess: () => {
+      refetchClasses();
+      const modal = document.getElementById(
+        "add_new_class_modal"
+      ) as HTMLDialogElement;
+      if (modal) modal.close();
+    },
     mode: "create",
   });
 
@@ -33,44 +39,58 @@ const CreateClassForm = ({ getClasses }: CreateClassFormProps) => {
 
   return (
     <>
-      <form
-        action={submitAction}
-        className="grid grid-cols-4 p-4 bg-violet-100"
-      >
-        {error && <p className="error">{error}</p>}
-        <label htmlFor="course" className="self-center">
-          Course:
-        </label>
-        <select className="border-2" id="course" name="course" required>
+      <form action={submitAction}>
+      <fieldset className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box grid grid-cols-3">
+        <legend className="fieldset-legend">Add New Class</legend>
+
+        <select className="select w-full" id="course" name="course" required>
+          <option value="">Select Course</option>
           {defaultCourses.map((course, index) => (
             <option key={index} value={course}>
               {course}
             </option>
           ))}
         </select>
-        <label htmlFor="courseType" className="self-center">
-          Course Type:
-        </label>
+
         <select
-          className="border-2 p-2 rounded"
+          className="select w-full"
           id="courseType"
           name="courseType"
           required
         >
-          <option value="">Select course</option>
+          <option value="">Select course type</option>
           {courseTypeItems.map((course) => (
             <option key={course.id} value={course.id}>
               {course.name}
             </option>
           ))}
         </select>
-        <label htmlFor="className">Class:</label>
-        <input className="border-2" id="className" name="className" required />
-        <label htmlFor="teacherOne">Teacher One:</label>
-        <input className="border-2" id="teacherOne" name="teacherOne" />
-        <label htmlFor="teacherTwo">Teacher Two:</label>
-        <input className="border-2" id="teacherTwo" name="teacherTwo" />
-        <SubmitButton label={"Create Class"} />
+
+        <input
+          className="input w-full"
+          id="className"
+          name="className"
+          placeholder="Class Name"
+          required
+        />
+
+        <input
+          className="input w-full"
+          id="teacherOne"
+          name="teacherOne"
+          placeholder="Mon-Wed Teacher"
+        />
+
+        <input
+          className="input w-full"
+          id="teacherTwo"
+          name="teacherTwo"
+          placeholder="Thurs-Fri Teacher"
+        />
+
+        <button className="btn btn-success w-full" type="submit">Create</button>
+       
+      </fieldset>
       </form>
     </>
   );
@@ -83,7 +103,7 @@ const defaultCourses = ["Extreme English", "General English"];
 const defaultCourseTypes = [
   {
     id: 1,
-    name: "GGGCambridge",
+    name: "Cambridge",
     description: "Cambridge English exams",
   },
   {

@@ -1,4 +1,4 @@
-import { Button } from "@/components/button/Button";
+import { Button } from "@/components/z_TO_DELETE/DEL_button/Button";
 
 interface ActionPanelProps {
   studentFormShown: boolean;
