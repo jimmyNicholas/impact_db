@@ -4,6 +4,7 @@ import { Modal } from './Modal';
 
 const meta = {
   component: Modal,
+  tags: ['autodocs'],
 } satisfies Meta<typeof Modal>;
 
 export default meta;
