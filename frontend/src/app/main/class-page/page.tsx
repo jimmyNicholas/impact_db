@@ -83,7 +83,7 @@ export const ClassPageContent = () => {
   };
 
   return (
-    <div className="grid grid-flow-row">
+    <div className="grid grid-flow-row mb-10">
       {classData && (
         <div className="grid grid-cols-[50%_auto_auto] gap-4 px-2">
           <ClassPageInfoPanel {...infoPanelProps} />
