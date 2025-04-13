@@ -38,8 +38,10 @@ export const createOverallColumns = ({
     id: string;
     header: string;
     type?: "default" | "grade" | "date" | "text-field";
-    columns: {id: string, header: string}[];
+    columns: {id: string, header: string, meta?: {className: string}}[];
   };
+
+  const baseBodyStyle = "bg-primary-content";
 
   const overallColumnDefs: OverallColumnDef[] = [
     {
@@ -49,18 +51,30 @@ export const createOverallColumns = ({
           {
             id: "overall_reading",
             header: "R",
+            meta: {
+              className: baseBodyStyle, 
+            },
           },
           {
             id: "overall_writing",
             header: "W",
+            meta: {
+              className: baseBodyStyle, 
+            },
           },
           {
             id: "overall_speaking",
             header: "S",
+            meta: {
+              className: baseBodyStyle, 
+            },
           },
           {
             id: "overall_listening",
             header: "L",
+            meta: {
+              className: baseBodyStyle, 
+            },
           },
         ],
       },
@@ -79,6 +93,7 @@ export const createOverallColumns = ({
     
     result.push(...childColumns);
   });
+  console.log(result);
   
   return result;
 }

@@ -8,9 +8,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ColumnDef, flexRender, Row, SortingState, VisibilityState } from "@tanstack/react-table";
+import { ColumnDef, flexRender, Row, RowData, SortingState, VisibilityState } from "@tanstack/react-table";
 import { useTableState } from "@/widgets/data-table/hooks/useTableState";
 import { TableControls } from "@/widgets/data-table/components/TableControls";
+
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    className?: string
+  }
+}
 
 export interface ColumnGroup {
   id: string;
@@ -97,7 +103,13 @@ export function DataTable<TData extends Record<string, any>>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell 
+                      key={cell.id}
+                      className={`
+                        px-4 py-2 
+                        ${cell.column.columnDef.meta?.className || ''}
+                      `}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

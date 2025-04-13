@@ -4,9 +4,12 @@ import { SelectionRowCell } from "@/widgets/data-table/components/cell/selection
 import { useEffect, useState } from "react";
 import { EditableCell } from "@/widgets/data-table/components/EditableCell"
 
-export const createSelectionColumn = <T,>(): ColumnDef<T, unknown> => {
+export const createSelectionColumn = <T,>(style: string): ColumnDef<T, unknown> => {
   return {
     id: "select",
+    meta: {
+      className: style, 
+    },
     header: ({ table }) => <SelectionHeaderCell table={table} />,
     cell: ({ row }) => <SelectionRowCell row={row} />,
     enableSorting: false,
@@ -20,6 +23,7 @@ export interface createEditableColumnProps<T> {
   type?: 'default' | 'grade' | 'date' | 'text-field' | undefined;
   handleSave: (value: string, row: Row<T>, columnId: string) => void;
   getValue: (row: Row<T>, columnId: string) => string;
+  meta?: { className?: string };
 }
 
 export const createEditableColumn = <T,>({
@@ -28,6 +32,7 @@ export const createEditableColumn = <T,>({
     type = 'default',
     handleSave,
     getValue,
+    meta,
   }: createEditableColumnProps<T>): ColumnDef<T, unknown> => {
 
     const formatDate = (value: string | number): string => {
@@ -69,6 +74,7 @@ export const createEditableColumn = <T,>({
     return {
       header,
       id,
+      meta,
       cell: ({ row, column }) => {
         
         const initialValue = getValue(row, column.id);
