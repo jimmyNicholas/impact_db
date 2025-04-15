@@ -41,7 +41,7 @@ export const createOverallColumns = ({
     columns: {id: string, header: string, meta?: {className: string}}[];
   };
 
-  const baseBodyStyle = "bg-primary-content";
+  const baseBodyStyle = "bg-primary-content/50";
 
   const overallColumnDefs: OverallColumnDef[] = [
     {

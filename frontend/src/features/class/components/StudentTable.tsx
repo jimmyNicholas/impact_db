@@ -65,7 +65,7 @@ export const StudentTable = ({
     <div className="flex items-center gap-2">
       <h1>Week</h1>
       <input
-        className="w-12 border-2 text-center text-base-content"
+        className="w-12 border-2 text-center text-base-content bg-base-100"
         type="number"
         min={1}
         max={10}

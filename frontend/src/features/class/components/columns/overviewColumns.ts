@@ -38,7 +38,7 @@ export const createOverviewColumns = ({
     meta?: {className: string};
   };
 
-  const baseBodyStyle = "bg-secondary-content opacity-70";
+  const baseBodyStyle = "bg-secondary-content/50";
 
   const overviewColumnDefs: OverviewColumnDef[] = [
     {

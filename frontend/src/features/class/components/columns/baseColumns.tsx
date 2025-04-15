@@ -6,7 +6,7 @@ import { ArrowUpDown } from "lucide-react";
 
 export const createBaseColumns = (): ColumnDef<StudentType, unknown>[] => {
   const baseHeaderStyle = "btn btn-ghost";
-  const baseBodyStyle = "bg-base-300";
+  const baseBodyStyle = "bg-info-content/10";
 
   return [
     createSelectionColumn<StudentType>(baseBodyStyle),

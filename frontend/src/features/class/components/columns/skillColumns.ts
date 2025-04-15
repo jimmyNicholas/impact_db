@@ -80,7 +80,7 @@ export const createSkillColumns = ({
     }
   };
 
-  const baseBodyStyle = "bg-accent";
+  const baseBodyStyle = "bg-accent/30";
   const skillColumnDefs = [
     {
       id: "Grammar",
