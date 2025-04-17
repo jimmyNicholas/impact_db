@@ -35,27 +35,41 @@ export const createOverviewColumns = ({
     id: string;
     header: string;
     type?: "default" | "grade" | "date" | "text-field";
+    meta?: {className: string};
   };
+
+  const baseBodyStyle = "bg-secondary-content/50";
 
   const overviewColumnDefs: OverviewColumnDef[] = [
     {
       id: "start_date",
       header: "Start Date",
       type: "date",
+      meta: {
+        className: baseBodyStyle, 
+      },
     },
     {
       id: "participation",
       header: "Participation",
+      meta: {
+        className: baseBodyStyle, 
+      },
     },
     {
       id: "level_up",
       header: "Level Up",
-      
+      meta: {
+        className: baseBodyStyle, 
+      },
     },
     {
       id: "teacher_comments",
       header: "Comments",
       type: "text-field",
+      meta: {
+        className: baseBodyStyle, 
+      },
     },
   ];
 

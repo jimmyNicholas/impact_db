@@ -5,17 +5,24 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
 export const createBaseColumns = (): ColumnDef<StudentType, unknown>[] => {
+  const baseHeaderStyle = "btn btn-ghost";
+  const baseBodyStyle = "bg-info-content/10";
+
   return [
-    createSelectionColumn<StudentType>(),
+    createSelectionColumn<StudentType>(baseBodyStyle),
     {
       accessorKey: "student_id",
       id: "ID",
       enableHiding: false,
+      meta: {
+        className: baseBodyStyle, 
+      },
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className={`${baseHeaderStyle}`}
           >
             ID
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -27,11 +34,15 @@ export const createBaseColumns = (): ColumnDef<StudentType, unknown>[] => {
       accessorKey: "first_name",
       id: "firstName",
       enableHiding: false,
+      meta: {
+        className: baseBodyStyle, 
+      },
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className={`${baseHeaderStyle}`}
           >
             {"Given Name(s)"}
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -43,11 +54,15 @@ export const createBaseColumns = (): ColumnDef<StudentType, unknown>[] => {
       accessorKey: "last_name",
       id: "lastName",
       enableHiding: false,
+      meta: {
+        className: baseBodyStyle, 
+      },
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className={`${baseHeaderStyle}`}
           >
             {"Surname(s)"}
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -60,6 +75,9 @@ export const createBaseColumns = (): ColumnDef<StudentType, unknown>[] => {
       header: "Nickname",
       id: "nickname",
       enableHiding: false,
+      meta: {
+        className: baseBodyStyle, 
+      },
     },
     // {
     //   id: "fullName",

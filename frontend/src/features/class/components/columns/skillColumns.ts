@@ -80,14 +80,57 @@ export const createSkillColumns = ({
     }
   };
 
+  const baseBodyStyle = "bg-accent/30";
   const skillColumnDefs = [
-    { id: "Grammar", header: "G" },
-    { id: "Vocabulary", header: "V" },
-    { id: "Listening", header: "L" },
-    { id: "Reading", header: "R" },
-    { id: "Writing", header: "W" },
-    { id: "Speaking", header: "S" },
-    { id: "Pronunciation", header: "P" },
+    {
+      id: "Grammar",
+      header: "G",
+      meta: {
+        className: baseBodyStyle,
+      },
+    },
+    {
+      id: "Vocabulary",
+      header: "V",
+      meta: {
+        className: baseBodyStyle,
+      },
+    },
+    {
+      id: "Listening",
+      header: "L",
+      meta: {
+        className: baseBodyStyle,
+      },
+    },
+    {
+      id: "Reading",
+      header: "R",
+      meta: {
+        className: baseBodyStyle,
+      },
+    },
+    {
+      id: "Writing",
+      header: "W",
+      meta: {
+        className: baseBodyStyle,
+      },
+    },
+    {
+      id: "Speaking",
+      header: "S",
+      meta: {
+        className: baseBodyStyle,
+      },
+    },
+    {
+      id: "Pronunciation",
+      header: "P",
+      meta: {
+        className: baseBodyStyle,
+      },
+    },
   ];
 
   return skillColumnDefs.map((skill) => {

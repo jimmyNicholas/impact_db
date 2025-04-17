@@ -65,7 +65,7 @@ export const StudentTable = ({
     <div className="flex items-center gap-2">
       <h1>Week</h1>
       <input
-        className="w-12 border-2 text-center"
+        className="w-12 border-2 text-center text-base-content bg-base-100"
         type="number"
         min={1}
         max={10}
@@ -80,21 +80,21 @@ export const StudentTable = ({
     {
       id: "Overall",
       header: () => (
-        <span className="grid p-2 justify-center bg-lime-200">Overall</span>
+        <span className="grid p-2 justify-center bg-base-content text-base-100">Overall</span>
       ),
       columns: overallColumns,
     },
     {
       id: "Overview",
       header: () => (
-        <span className="grid p-2 justify-center bg-indigo-200">Overview</span>
+        <span className="grid p-2 justify-center bg-base-content text-base-100">Overview</span>
       ),
       columns: overviewColumns,
     },
     {
       id: "Results",
       header: () => (
-        <span className="grid grid-flow-col gap-4 p-2 justify-center items-center bg-cyan-200">
+        <span className="grid grid-flow-col gap-4 p-2 justify-center items-center bg-base-content text-base-100">
           {visibleWeekInput}Results
         </span>
       ),
