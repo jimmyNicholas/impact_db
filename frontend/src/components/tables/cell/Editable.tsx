@@ -28,7 +28,7 @@ export const Editable: React.FC<EditableProps> & {
   Display: React.FC<DisplayProps>;
   Input: React.FC<InputProps>;
   Actions: React.FC<ActionsProps>;
-} = ({ children, className = "", width =40 }) => {
+} = ({ children, className = "", width=40 }) => {
   const containerClass = `border-2 text-center relative overflow-hidden ${className}`;
   const style = width ? { width } : undefined;
 
